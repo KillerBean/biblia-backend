@@ -1,14 +1,20 @@
 const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
+import { configDotenv } from 'dotenv';
+
+configDotenv()
+
+const PORT = process.env.PORT || 4000
+const HOSTNAME = process.env.HOSTNAME || 'http://localhost'
 
 const doc = {
     info: {
         version: "1.0.0",
-        title: "My API",
-        description: "Some description..."
+        title: "Api Biblias",
+        description: "Essa API traz várias versões da Biblia Sagrada."
     },
     servers: [
         {
-            url: 'http://localhost:4000'
+            url: `${HOSTNAME}:${PORT}`
         }
     ],
     components: {

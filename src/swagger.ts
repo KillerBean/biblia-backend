@@ -53,4 +53,6 @@ const doc = {
 const outputFile = './swagger-output.json';
 const endpointsFiles = ['./index'];
 
-swaggerAutogen(outputFile, endpointsFiles, doc)
+swaggerAutogen(outputFile, endpointsFiles, doc).then(async () => {
+    await import('./index'); // Your project's root file
+  });

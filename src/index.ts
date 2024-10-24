@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express'
 import { configDotenv } from 'dotenv';
 
 import apiRouter from "./router";
+import getIPAddress from './middlewares/get-ip';
 import swaggerFile from "./swagger-output.json"
 import customHeaders from './middlewares/custom-headers';
 
@@ -12,7 +13,7 @@ import customHeaders from './middlewares/custom-headers';
 configDotenv()
 
 const PORT = process.env.PORT || 4000
-const HOSTNAME = process.env.HOSTNAME || 'http://localhost'
+const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
 
 // App Express
 const app = express()
@@ -27,7 +28,7 @@ app.use(bodyParser.json());
 
 // Cors
 app.use(cors({
-    origin: ['http://localhost:4000']
+    origin: [`${HOSTNAME}:${PORT}`, `http://localhost:${PORT}`],
 }))
 // Docs swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));

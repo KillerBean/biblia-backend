@@ -1,10 +1,11 @@
 const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
 import { configDotenv } from 'dotenv';
+import getIPAddress from './middlewares/get-ip';
 
 configDotenv()
 
 const PORT = process.env.PORT || 4000
-const HOSTNAME = process.env.HOSTNAME || 'http://localhost'
+const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
 
 const doc = {
     info: {
@@ -15,6 +16,9 @@ const doc = {
     servers: [
         {
             url: `${HOSTNAME}:${PORT}`
+        },
+        {
+            url: `http://localhost:${PORT}`
         }
     ],
     components: {

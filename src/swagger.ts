@@ -16,9 +16,6 @@ const doc = {
     servers: [
         {
             url: `${HOSTNAME}:${PORT}`
-        },
-        {
-            url: `http://localhost:${PORT}`
         }
     ],
     components: {

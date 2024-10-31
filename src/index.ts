@@ -12,7 +12,7 @@ import customHeaders from './middlewares/custom-headers';
 // carrega o arquivo .env
 configDotenv()
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.HTTP_PORT || 4000
 const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
 
 // App Express

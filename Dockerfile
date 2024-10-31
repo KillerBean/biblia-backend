@@ -8,7 +8,7 @@ RUN npm install typescript
 COPY --chown=node:node . .
 
 ENV HOSTNAME=http://localhost
-ENV PORT=3333
+ENV HTTP_PORT=3333
 
 EXPOSE 3333
 

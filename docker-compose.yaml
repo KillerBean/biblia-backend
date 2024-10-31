@@ -1,16 +1,18 @@
+networks:
+  nginx_net:
+    driver: bridge
+    
+
 services:
   app-01: &app
     build: .
-    hostname: app1
-    environment:
-            HTTP_PORT: 9501
-    network_mode: "host"
+    hostname: app-01
+    networks:
+      - nginx_net
   
   app-02:
     <<: *app
-    hostname: app2
-    environment:
-            HTTP_PORT: 9502
+    hostname: app-02
 
   nginx: # Load Balancer
     image: nginx:latest
@@ -19,7 +21,11 @@ services:
     depends_on:
       - app-01
       - app-02
-    network_mode: "host"
+    ports:
+      - "80:80"
+    
+    networks:
+      - nginx_net
   
   # db:
   #       container_name: biblia-backend-db

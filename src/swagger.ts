@@ -4,7 +4,7 @@ import getIPAddress from './middlewares/get-ip';
 
 configDotenv()
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.HTTP_PORT || 4000
 const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
 
 const doc = {

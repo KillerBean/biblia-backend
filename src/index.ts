@@ -17,6 +17,10 @@ const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://loc
 
 // App Express
 const app = express()
+const corsOptions = {
+    origin: [`${HOSTNAME}:${PORT}`, `http://localhost:${PORT}`, 'http://localhost'],
+    optionsSuccessStatus: 200
+}
 
 
 /* Middlewares */
@@ -25,11 +29,8 @@ app.disable( 'x-powered-by' );
 app.use(customHeaders);
 app.use(bodyParser.json());
 
-
 // Cors
-app.use(cors({
-    origin: [`${HOSTNAME}:${PORT}`, `http://localhost:${PORT}`],
-}))
+app.use(cors(corsOptions))
 // Docs swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 

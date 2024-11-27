@@ -6,8 +6,9 @@ apiRouter.get('/', (req, res, next) => {
     res.send(SourceController.index())
 })
 
-apiRouter.get('/versions', (req, res, next) => {
-    res.send(SourceController.getVersionList())
+apiRouter.get('/versions', async (req, res, next) => {
+    const versions = await SourceController.getVersionList()
+    res.send(versions)
 })
 
 export default apiRouter

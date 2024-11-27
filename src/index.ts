@@ -35,10 +35,7 @@ app.use(cors(corsOptions))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Rotas
-app.use('/api', apiRouter)
-app.get('/', (req, res) => {
-    res.send('Bem-vindo!')
-})
+app.use('/', apiRouter)
 
 
 // Resposta padrão para quaisquer outras requisições:

@@ -1,8 +1,28 @@
 import IController from './controller-interface'
+import DBController from './db-controller';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 class SourceController extends IController{
+    dbController: DBController | undefined;
+
+    constructor(){
+        super()
+        this.init()
+    }
+
+    async init(){
+        const db = await open({
+            filename: './src/db/sqlite/ARC.sqlite', // Specify the database file
+            mode: sqlite3.OPEN_READONLY, // Specify the mode of the database
+            driver: sqlite3.Database,
+          })
+        
+        this.dbController = new DBController(db)
+    }
+
     index(){
         return "Toda a Escritura é inspirada por Deus " +
          "e útil para o ensino, para a repreensão, para a correção, " +
@@ -32,7 +52,12 @@ class SourceController extends IController{
     }
 
     getBookByID(bookID:number){
-        return []
+        let book = this.dbController?.getBookByID(bookID)
+        return book
+    }
+    async getBooks(testamentId?: number) {
+        const books = await this.dbController?.getBooksByTestament(testamentId) || [];
+        return books
     }
     getByTestament(testamentID:number){
         return []

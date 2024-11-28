@@ -3,8 +3,8 @@ RUN mkdir -p /mnt/dados/projects/biblia_backend/node_modules && chown -R node:no
 WORKDIR /mnt/dados/projects/biblia_backend
 COPY package*.json ./
 USER node
-RUN npm install
 COPY --chown=node:node . .
+RUN npm install
 RUN npm install typescript
 
 ENV HOSTNAME=http://localhost

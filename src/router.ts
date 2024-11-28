@@ -7,7 +7,7 @@ apiRouter.get('/', (req, res, next) => {
 })
 
 apiRouter.get('/books/:bookId', async (req, res, next) => {
-    //  #swagger.parameters['Id'] = { in: 'path', required: false, type: 'number' }
+    //  #swagger.parameters['bookId'] = { in: 'path', required: false, type: 'number' }
     let bookId = Number.parseInt(req.params.bookId)
     
     let result = await SourceController.getBookByID(bookId)

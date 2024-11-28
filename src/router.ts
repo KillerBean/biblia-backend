@@ -6,11 +6,19 @@ apiRouter.get('/', (req, res, next) => {
     res.send(SourceController.index())
 })
 
-apiRouter.get('/books/:testamentId?', async (req, res, next) => {
-    let testamentId: number | undefined
-    if(req.params.testamentId){
-        testamentId = Number.parseInt(req.params.testamentId)
-    }
+apiRouter.get('/books/:bookId', async (req, res, next) => {
+    //  #swagger.parameters['Id'] = { in: 'path', required: false, type: 'number' }
+    let bookId = Number.parseInt(req.params.bookId)
+    
+    let result = await SourceController.getBookByID(bookId)
+    res.json(result)
+})
+
+apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
+    //  #swagger.parameters['testamentId'] = { in: 'path', required: false, type: 'number' }
+
+    let testamentId: number = Number.parseInt(req.params.testamentId)
+    
     let result = await SourceController.getBooks(testamentId)
     console.log(result)
     res.json(result)

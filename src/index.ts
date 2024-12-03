@@ -2,12 +2,12 @@ import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express'
+import favicon from 'serve-favicon';
 import { configDotenv } from 'dotenv';
 
 import apiRouter from "./router";
 import getIPAddress from './middlewares/get-ip';
 import swaggerFile from "./swagger-output.json"
-import customHeaders from './middlewares/custom-headers';
 
 // carrega o arquivo .env
 configDotenv()
@@ -36,6 +36,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // Rotas
 app.use('/', apiRouter)
 
+app.use(favicon(__dirname + '/../images/favicon.ico')); 
 
 // Resposta padrão para quaisquer outras requisições:
 app.use((req, res) => {

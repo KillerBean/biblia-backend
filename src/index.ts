@@ -26,7 +26,6 @@ const corsOptions = {
 /* Middlewares */
 // Switch off the default 'X-Powered-By: Express' header
 app.disable( 'x-powered-by' );
-app.use(customHeaders);
 app.use(bodyParser.json());
 
 // Cors

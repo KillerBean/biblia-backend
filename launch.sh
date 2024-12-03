@@ -1,6 +1,6 @@
 #!/bin/env sh
 
-while i in "$@"; do
+for i in "$@"; do
     case $i in
         -d|--down)
             docker compose down --rmi local

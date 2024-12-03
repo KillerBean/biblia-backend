@@ -15,15 +15,11 @@ export default class DBController {
         return row
     }
 
-    async getBooksByTestament(testamentId?: number): Promise<any[]> {
+    async getBooksByTestament(testamentId: number): Promise<any[]> {
         const sql = 'SELECT * FROM book WHERE testament_reference_id = ?';
 
-        if (testamentId) {
-            const rows = await this.db.all(sql, [testamentId]);
-            return rows || []
-        }else {
-            const rows = await this.db.all('SELECT * FROM book');
-            return rows || []
-        }
+        const rows = await this.db.all(sql, [testamentId]);
+        return rows || []
+        
     }
 }

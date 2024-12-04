@@ -22,4 +22,23 @@ export default class DBController {
         return rows || []
         
     }
+
+    async getVerses(bookId?: number, chapterId?: number): Promise<any[]> {
+        let sql = 'SELECT * FROM verse';
+        let params: number[] = []
+        if (chapterId && !bookId) {
+            return []
+        }
+
+        if(bookId && chapterId){
+            sql += ' WHERE book_id = ? AND chapter_id = ?';
+            params = [bookId, chapterId]
+        }else if (bookId) {
+            sql += ' WHERE book_id = ?';
+            params = [bookId]
+        } 
+
+        const rows = await this.db.all(sql, params);
+        return rows || []
+    }
 }

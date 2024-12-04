@@ -63,8 +63,9 @@ class SourceController extends IController{
         const books = await this.dbController?.getBooksByTestament(testamentID) || [];
         return books
     }
-    getVerses(bookID?:number, chapterID?:number){
-        return []
+    async getVerses(bookID?:number, chapterID?:number){
+        const verses = await this.dbController?.getVerses(bookID, chapterID)
+        return verses
     }
 }
 export default new SourceController()

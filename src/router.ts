@@ -12,7 +12,7 @@ apiRouter.get('/books', async (req, res, next) => {
 })
 
 apiRouter.get('/books/:bookId', async (req, res, next) => {
-    //  #swagger.parameters['bookId'] = { in: 'path', required: false, type: 'number' }
+    //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
     let bookId = Number.parseInt(req.params.bookId)
     if(isNaN(bookId)){
         res.status(400).send('Invalid book ID')
@@ -24,7 +24,7 @@ apiRouter.get('/books/:bookId', async (req, res, next) => {
 })
 
 apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
-    //  #swagger.parameters['testamentId'] = { in: 'path', required: false, type: 'number' }
+    //  #swagger.parameters['testamentId'] = { in: 'path', type: 'number' }
     let testamentId = Number.parseInt(req.params.testamentId)
     if(isNaN(testamentId)){
         res.status(400).send('Invalid testament ID')
@@ -32,6 +32,33 @@ apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
     }
     
     let result = await SourceController.getBooksByTestament(testamentId)
+    res.json(result)
+})
+
+apiRouter.get('/verses/:bookId', async (req, res, next) => {
+    //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
+    let bookId = Number.parseInt(req.params.bookId)
+    if(isNaN(bookId)){
+        res.status(400).send('Invalid book ID')
+        return
+    }
+    
+    let result = await SourceController.getVerses(bookId)
+    res.json(result)
+})
+
+apiRouter.get('/verses/:bookId/:chapter', async (req, res, next) => {
+    //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
+    //  #swagger.parameters['chapter'] = { in: 'path', type: 'number' }
+    let bookId = Number.parseInt(req.params.bookId)
+    let chapter = Number.parseInt(req.params.chapter)
+    
+    if(isNaN(bookId) || isNaN(chapter)){
+        res.status(400).send('Invalid book ID or chapter')
+        return
+    }
+    
+    let result = await SourceController.getVerses(bookId, chapter)
     res.json(result)
 })
 

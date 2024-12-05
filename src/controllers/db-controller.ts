@@ -31,7 +31,7 @@ export default class DBController {
         }
 
         if(bookId && chapterId){
-            sql += ' WHERE book_id = ? AND chapter_id = ?';
+            sql += ' WHERE book_id = ? AND chapter = ?';
             params = [bookId, chapterId]
         }else if (bookId) {
             sql += ' WHERE book_id = ?';

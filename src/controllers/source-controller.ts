@@ -51,9 +51,9 @@ class SourceController extends IController{
         return dbFiles
     }
 
-    getBookByID(bookID:number){
-        let book = this.dbController?.getBookByID(bookID)
-        return book
+    async getBookByID(bookID:number){
+        let book = await this.dbController?.getBookByID(bookID)
+        return book || []
     }
     async getBooks() {
         const books = await this.dbController?.getBooks() || [];

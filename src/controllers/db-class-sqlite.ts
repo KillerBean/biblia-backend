@@ -1,6 +1,6 @@
 import { Database } from 'sqlite';
 
-export default class DBController {
+export default class DBClassSqlite {
     constructor(private db: Database) {}
 
     async getBookByID(bookId: number): Promise<any> {

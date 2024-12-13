@@ -1,12 +1,12 @@
 import IController from './controller-interface'
-import DBController from './db-controller';
+import DBClassSqlite from './db-class-sqlite';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
-class SourceController extends IController{
-    dbController: DBController | undefined;
+class SqliteController extends IController{
+    dbController: DBClassSqlite | undefined;
 
     constructor(){
         super()
@@ -20,7 +20,7 @@ class SourceController extends IController{
             driver: sqlite3.Database,
           })
         
-        this.dbController = new DBController(db)
+        this.dbController = new DBClassSqlite(db)
     }
 
     index(){
@@ -68,4 +68,4 @@ class SourceController extends IController{
         return verses
     }
 }
-export default new SourceController()
+export default new SqliteController()

@@ -1,13 +1,15 @@
 import express from 'express'
-import SourceController from './controllers/source-controller'
+import SqliteController from './controllers/sqlite-controller'
 const apiRouter = express.Router()
 
+const dbController = SqliteController
+
 apiRouter.get('/', (req, res, next) => {
-    res.send(SourceController.index())
+    res.send(dbController.index())
 })
 
 apiRouter.get('/books', async (req, res, next) => {
-    const books = await SourceController.getBooks()
+    const books = await dbController.getBooks()
     res.send(books)
 })
 
@@ -19,7 +21,7 @@ apiRouter.get('/books/:bookId', async (req, res, next) => {
         return
     }
     
-    let result = await SourceController.getBookByID(bookId)
+    let result = await dbController.getBookByID(bookId)
     res.json(result)
 })
 
@@ -31,7 +33,7 @@ apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
         return
     }
     
-    let result = await SourceController.getBooksByTestament(testamentId)
+    let result = await dbController.getBooksByTestament(testamentId)
     res.json(result)
 })
 
@@ -43,7 +45,7 @@ apiRouter.get('/verses/:bookId', async (req, res, next) => {
         return
     }
     
-    let result = await SourceController.getVerses(bookId)
+    let result = await dbController.getVerses(bookId)
     res.json(result)
 })
 
@@ -58,12 +60,12 @@ apiRouter.get('/verses/:bookId/:chapter', async (req, res, next) => {
         return
     }
     
-    let result = await SourceController.getVerses(bookId, chapter)
+    let result = await dbController.getVerses(bookId, chapter)
     res.json(result)
 })
 
 apiRouter.get('/versions', async (req, res, next) => {
-    const versions = await SourceController.getVersionList()
+    const versions = await dbController.getVersionList()
     res.send(versions)
 })
 

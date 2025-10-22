@@ -1,5 +1,15 @@
 #!/bin/env sh
 
+file="package-lock.json"
+folder="node_modules"
+
+if [ -f "$file" ] ; then
+    rm "$file"
+fi
+if [ -f "$folder" ] ; then
+    rm -r "$folder"
+fi
+
 for i in "$@"; do
     case $i in
         -d|--down)

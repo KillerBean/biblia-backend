@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:25-alpine
 RUN mkdir -p /mnt/dados/projects/biblia_backend/node_modules && chown -R node:node /mnt/dados/projects/biblia_backend
 WORKDIR /mnt/dados/projects/biblia_backend
 COPY package*.json ./

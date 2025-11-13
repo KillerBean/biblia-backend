@@ -1,26 +1,34 @@
-import express from 'express'
-import cors from 'cors'
-import bodyParser from 'body-parser';
-import swaggerUi from 'swagger-ui-express'
+import cors from 'cors';
+import express from 'express';
 import favicon from 'serve-favicon';
+import bodyParser from 'body-parser';
 import { configDotenv } from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
 
 import apiRouter from "./router";
 import getIPAddress from './middlewares/get-ip';
-import swaggerFile from "./swagger-output.json"
+import swaggerFile from "./swagger-output.json";
 
 // carrega o arquivo .env
 configDotenv()
 
 const PORT = process.env.HTTP_PORT || 4000
-const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
+const HOSTNAME = "http://" + getIPAddress()
 
 // App Express
 const app = express()
 const corsOptions = {
-    origin: [`${HOSTNAME}:${PORT}`, `http://localhost:${PORT}`, 'http://localhost'],
+    origin: [`${HOSTNAME}:${PORT}`],
     optionsSuccessStatus: 200
+};
+
+if (process.env.NODE_ENV === 'development') {
+    let localAddresses = [`http://localhost:${PORT}`, 'http://localhost'];
+    localAddresses.forEach(origin => {
+        corsOptions.origin.push(origin);
+    });
 }
+
 
 
 /* Middlewares */

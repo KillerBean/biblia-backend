@@ -8,8 +8,12 @@ import { join } from 'node:path';
 class SqliteController implements IController{
     dbController: DBClassSqlite | undefined;
 
-    constructor(){
-        this.init()
+    private constructor(){}
+
+    static async create(): Promise<SqliteController> {
+        const controller = new SqliteController();
+        await controller.init();
+        return controller;
     }
     
     async init(){
@@ -67,4 +71,5 @@ class SqliteController implements IController{
         return verses
     }
 }
-export default new SqliteController()
+export default SqliteController
+// export default new SqliteController()

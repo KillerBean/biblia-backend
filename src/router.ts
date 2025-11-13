@@ -1,11 +1,14 @@
 import express from 'express'
 import SqliteController from './controllers/sqlite-controller'
 const apiRouter = express.Router()
+let dbController: SqliteController;
 
-const dbController = SqliteController
+SqliteController.create().then(controller => {
+    dbController = controller;
+});
 
 apiRouter.get('/', (req, res, next) => {
-    res.send(dbController.index())
+    res.send(dbController?.index())
 })
 
 apiRouter.get('/books', async (req, res, next) => {
@@ -16,7 +19,7 @@ apiRouter.get('/books', async (req, res, next) => {
 apiRouter.get('/books/:bookId', async (req, res, next) => {
     //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
     let bookId = Number.parseInt(req.params.bookId)
-    if(isNaN(bookId)){
+    if(Number.isNaN(bookId)){
         res.status(400).send('Invalid book ID')
         return
     }
@@ -28,7 +31,7 @@ apiRouter.get('/books/:bookId', async (req, res, next) => {
 apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
     //  #swagger.parameters['testamentId'] = { in: 'path', type: 'number' }
     let testamentId = Number.parseInt(req.params.testamentId)
-    if(isNaN(testamentId)){
+    if(Number.isNaN(testamentId)){
         res.status(400).send('Invalid testament ID')
         return
     }
@@ -40,7 +43,7 @@ apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
 apiRouter.get('/verses/:bookId', async (req, res, next) => {
     //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
     let bookId = Number.parseInt(req.params.bookId)
-    if(isNaN(bookId)){
+    if(Number.isNaN(bookId)){
         res.status(400).send('Invalid book ID')
         return
     }
@@ -55,7 +58,7 @@ apiRouter.get('/verses/:bookId/:chapter', async (req, res, next) => {
     let bookId = Number.parseInt(req.params.bookId)
     let chapter = Number.parseInt(req.params.chapter)
     
-    if(isNaN(bookId) || isNaN(chapter)){
+    if(Number.isNaN(bookId) || Number.isNaN(chapter)){
         res.status(400).send('Invalid book ID or chapter')
         return
     }

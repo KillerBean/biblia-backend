@@ -24,9 +24,9 @@ const corsOptions = {
 
 if (process.env.NODE_ENV === 'development') {
     let localAddresses = [`http://localhost:${PORT}`, 'http://localhost'];
-    localAddresses.forEach(origin => {
-        corsOptions.origin.push(origin);
-    });
+    for (let item of localAddresses){
+        corsOptions.origin.push(item);
+    }
 }
 
 

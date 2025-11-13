@@ -1,10 +1,10 @@
-abstract class IController{
-    index(){}
-    getVersionList(){}
-    getBookByID(bookID:number){}
-    getByTestament(testamentID:number){}
-    getVerses(bookID?:number, chapterID?:number){}
-    getBooks(testamentId?:number){}
+interface IController{
+    index():string;
+    getVersionList():Promise<string[]>;
+    getBookByID(bookID:number):Promise<any>;
+    getBooksByTestament(testamentID:number):Promise<any>;
+    getVerses(bookID?:number, chapterID?:number):Promise<any[]>;
+    getBooks(testamentId?:number):Promise<any>;
 }
 
 export default IController

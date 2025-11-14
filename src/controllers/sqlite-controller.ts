@@ -48,7 +48,8 @@ class SqliteController implements IController{
         try {
             const files = await readdir(dbFolder, { withFileTypes: false });
             for (const file of files)
-                dbFiles.push(file.replace('.sqlite', ''));
+                if (file.endsWith('.sqlite'))
+                    dbFiles.push(file.replace('.sqlite', ''));
           } catch (err) {
             console.error(err);
           }

@@ -52,18 +52,20 @@ apiRouter.get('/verses/:bookId', async (req, res, next) => {
     res.json(result)
 })
 
-apiRouter.get('/verses/:bookId/:chapter', async (req, res, next) => {
-    //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
-    //  #swagger.parameters['chapter'] = { in: 'path', type: 'number' }
+apiRouter.get('/verses/:bookId/:chapterId', async (req, res, next) => {
+    /**
+     *  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
+     *  #swagger.parameters['chapterId'] = { in: 'path', type: 'number' }
+     * */
     let bookId = Number.parseInt(req.params.bookId)
-    let chapter = Number.parseInt(req.params.chapter)
+    let chapterId = Number.parseInt(req.params.chapterId)
     
-    if(Number.isNaN(bookId) || Number.isNaN(chapter)){
+    if(Number.isNaN(bookId) || Number.isNaN(chapterId)){
         res.status(400).send('Invalid book ID or chapter')
         return
     }
     
-    let result = await dbController.getVerses(bookId, chapter)
+    let result = await dbController.getVerses(bookId, chapterId)
     res.json(result)
 })
 

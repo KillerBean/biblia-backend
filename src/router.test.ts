@@ -20,7 +20,7 @@ describe('API Endpoints', () => {
     (SqliteController.create as jest.Mock).mockResolvedValue(mockController as any);
 
     // 3. Now, dynamically import the router
-    const apiRouter = (await import('./router')).default;
+    const apiRouter = (await import('./router')).createApiRouter(mockController as any);
 
     // 4. Initialize the app with the router
     app = express();

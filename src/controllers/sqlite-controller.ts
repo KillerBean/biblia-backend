@@ -27,11 +27,13 @@ class SqliteController implements IController{
     }
     
     index(){
-        return "Toda a Escritura é inspirada por Deus " +
-        "e útil para o ensino, para a repreensão, para a correção, " +
-         "para a educação na justiça, a fim de que o homem de Deus seja " +
-         "perfeito e perfeitamente habilitado para toda boa obra.\n- 2 Timóteo 3:16-17"
+        return {
+            message: "Toda a Escritura é inspirada por Deus " +
+            "e útil para o ensino, para a repreensão, para a correção, " +
+            "para a educação na justiça, a fim de que o homem de Deus seja " +
+            "perfeito e perfeitamente habilitado para toda boa obra.\n- 2 Timóteo 3:16-17"
         }
+    }
         
     getByID(id: number) {
         return `${id}`

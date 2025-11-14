@@ -1,5 +1,5 @@
 interface IController{
-    index():string;
+    index():any;
     getVersionList():Promise<string[]>;
     getBookByID(bookID:number):Promise<any>;
     getBooksByTestament(testamentID:number):Promise<any>;

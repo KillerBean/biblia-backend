@@ -9,6 +9,10 @@ services:
     hostname: app-01
     networks:
       - nginx_net
+    depends_on:
+      - db
+    env_file:
+      - ./.env
   
   app-02:
     <<: *app
@@ -27,15 +31,18 @@ services:
     networks:
       - nginx_net
   
-  # db:
-  #       container_name: biblia-backend-db
-  #       image: postgres:15.4
-  #       environment:
-  #           POSTGRES_DB: biblia-backend-db
-  #           POSTGRES_PASSWORD: postgres
-  #           POSTGRES_USER: user
-  #       volumes:
-  #           - ./docker/postgres/postgres.conf:/etc/postgresql.conf
-  #           - ./docker/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
-  #       command: 'postgres -c config_file="/etc/postgresql.conf" -c "max_connections=450"'
-  #       network_mode: host
+  db:
+    container_name: biblia-backend-db
+    image: postgres:15.4
+    environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_USER: ${POSTGRES_USER}
+    #volumes:
+    #    - ./docker/postgres/postgres.conf:/etc/postgresql.conf
+    #    - ./docker/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
+    #command: 'postgres -c config_file="/etc/postgresql.conf" -c "max_connections=450"'
+    networks:
+      - nginx_net
+    env_file:
+      - ./.env

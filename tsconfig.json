@@ -109,7 +109,7 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     
     "noImplicitAny": true,
-    "types": ["node", "express"],
+    "types": ["node", "express", "jest"],
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

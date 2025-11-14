@@ -5,7 +5,8 @@ COPY package*.json ./
 USER node
 COPY --chown=node:node . .
 RUN npm install \
-    && npm install typescript
+    && npm install typescript \
+    && npm test
 
 ENV HOSTNAME=http://localhost
 ENV HTTP_PORT=3333

@@ -1,11 +1,15 @@
-const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
-import { configDotenv } from 'dotenv';
-import getIPAddress from './middlewares/get-ip';
+import swaggerAutogen from 'swagger-autogen';
 
-configDotenv()
+import 'dotenv/config';
+import getIPAddress from './middlewares/get-ip';
 
 const PORT = process.env.HTTP_PORT || 4000
 const HOSTNAME = "http://" + getIPAddress()//process.env.HOSTNAME || 'http://localhost'
+
+
+const swaggerOptions = {
+  openapi: '3.0.0',
+};
 
 const doc = {
     info: {
@@ -62,7 +66,7 @@ const endpointsFiles = ['./index', './router'];
 
 async function generateSwaggerDocs() {
     try {
-        await swaggerAutogen(outputFile, endpointsFiles, doc);
+        swaggerAutogen(outputFile, endpointsFiles, doc);
         await import('./index'); // Your project's root file
     } catch (err) {
         console.error('Error generating swagger:', err);
@@ -70,4 +74,4 @@ async function generateSwaggerDocs() {
     }
 }
 
-generateSwaggerDocs();
+await generateSwaggerDocs();

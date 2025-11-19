@@ -117,5 +117,9 @@
     "paths": {
       "~/*": ["./src/*"] // Exemplo de alias: "~" aponta para a pasta "src"
     },
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
   }
 }

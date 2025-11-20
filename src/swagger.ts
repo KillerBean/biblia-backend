@@ -64,14 +64,10 @@ const doc = {
 const outputFile = './swagger-output.json';
 const endpointsFiles = ['./index', './router'];
 
-async function generateSwaggerDocs() {
-    try {
-        await swaggerAutogen(swaggerOptions)(outputFile, endpointsFiles, doc);
-        await import('./index.ts'); // Your project's root file
-    } catch (err) {
-        console.error('Error generating swagger:', err);
-        process.exit(1);
-    }
+try {
+    await swaggerAutogen(swaggerOptions)(outputFile, endpointsFiles, doc);
+    await import('./index.ts'); // Your project's root file
+} catch (err) {
+    console.error('Error generating swagger:', err);
+    process.exit(1);
 }
-
-await generateSwaggerDocs();

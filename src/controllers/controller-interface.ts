@@ -1,4 +1,4 @@
-export interface IController{
+export default interface IController{
     index():any;
     getVersionList():Promise<string[]>;
     getBookByID(bookID:number):Promise<any>;

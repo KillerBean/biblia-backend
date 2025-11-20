@@ -1,6 +1,6 @@
 
 import { jest } from '@jest/globals';
-import { IController } from '../controllers/controller-interface.ts';
+import IController from '../controllers/controller-interface.ts';
 
 class MockSqliteController implements IController {
     dbController = undefined; // Add missing property

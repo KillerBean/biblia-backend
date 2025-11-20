@@ -1,5 +1,5 @@
 import express from 'express'
-import { IController } from './controllers/controller-interface.ts'
+import IController from './controllers/controller-interface.ts'
 
 export const createApiRouter = (dbController: IController) => {
     const apiRouter = express.Router()

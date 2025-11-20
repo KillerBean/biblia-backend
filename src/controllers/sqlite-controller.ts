@@ -1,8 +1,9 @@
-import IController from './controller-interface'
-import DBClassSqlite from './db-class-sqlite';
+import { IController } from './controller-interface.ts';
+import DBClassSqlite from './db-class-sqlite.ts';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { readdir } from 'node:fs/promises';
+import PathUtils from '../utils/path-utils.ts';
 import { join } from 'node:path';
 
 class SqliteController implements IController{
@@ -43,7 +44,7 @@ class SqliteController implements IController{
     async getVersionList(){
         // list files in the directory and return the list
         let dbFiles: string[] = []
-        let dbFolder = join(__dirname, '../db/sqlite')
+        let dbFolder = join(PathUtils.__dirname, '../db/sqlite')
         
         try {
             const files = await readdir(dbFolder, { withFileTypes: false });

@@ -8,7 +8,7 @@
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/index.ts\"",
     "start": "tsx ./src/index.ts",
     "swagger": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/swagger.ts\"",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "",
   "license": "ISC",
@@ -38,7 +38,7 @@
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.6.3"
+    "typescript": "^5.9.3"
   },
   "nodemonConfig": {
     "ignore": [

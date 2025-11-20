@@ -1,7 +1,11 @@
 
-import IController from '../controllers/controller-interface';
+import { jest } from '@jest/globals';
+import { IController } from '../controllers/controller-interface.ts';
 
 class MockSqliteController implements IController {
+    dbController = undefined; // Add missing property
+    init = jest.fn(); // Add missing method
+    getByID = jest.fn((id: number) => (`${id}`));
     
     // Mock implementations for each method in the interface
     index = jest.fn(() => ({ message: 'Mocked welcome message' }));

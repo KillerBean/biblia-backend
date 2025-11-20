@@ -1,7 +1,10 @@
 import { Database } from 'sqlite';
 
 export default class DBClassSqlite {
-    constructor(private readonly db: Database) {}
+    private readonly db: Database;
+    constructor(db: Database) {
+        this.db = db;
+    }
 
     async getBookByID(bookId: number): Promise<any> {
         const sql = 'SELECT * FROM book WHERE id = ?';

@@ -1,7 +1,7 @@
 import express from 'express'
-import SqliteController from './controllers/sqlite-controller'
+import { IController } from './controllers/controller-interface.ts'
 
-export const createApiRouter = (dbController: SqliteController) => {
+export const createApiRouter = (dbController: IController) => {
     const apiRouter = express.Router()
 
     apiRouter.get('/', (req, res, next) => {

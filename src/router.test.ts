@@ -1,11 +1,11 @@
 
 import request from 'supertest';
 import express from 'express';
-import SqliteController from './controllers/sqlite-controller';
-import MockSqliteController from './__mocks__/sqlite-controller';
+import { jest } from '@jest/globals';
+import MockSqliteController from './__mocks__/sqlite-controller.ts';
 
 // Mock the entire module
-jest.mock('./controllers/sqlite-controller');
+jest.mock('./controllers/sqlite-controller.ts');
 
 let app: express.Application;
 
@@ -13,16 +13,9 @@ describe('API Endpoints', () => {
   let mockController: MockSqliteController;
 
   beforeAll(async () => {
-    // 1. Create the mock controller instance
-    mockController = await MockSqliteController.create();
     
-    // 2. Configure the mock for the static `create` method BEFORE importing the router
-    (SqliteController.create as jest.Mock).mockResolvedValue(mockController as any);
-
-    // 3. Now, dynamically import the router
-    const apiRouter = (await import('./router')).createApiRouter(mockController as any);
-
-    // 4. Initialize the app with the router
+    mockController = await MockSqliteController.create();
+    const apiRouter = (await import('./router.ts')).createApiRouter(mockController);
     app = express();
     app.use('/', apiRouter);
   });

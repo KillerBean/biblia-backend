@@ -4,23 +4,17 @@ import path from 'node:path';
 import express from 'express';
 import favicon from 'serve-favicon';
 import bodyParser from 'body-parser';
-import { fileURLToPath } from 'node:url';
 import swaggerUi from 'swagger-ui-express';
-
-import { createApiRouter } from "./router";
-import getIPAddress from './middlewares/get-ip';
-import swaggerFile from "~/swagger-output.json";
-import SqliteController from './controllers/sqlite-controller';
+import PathUtils  from './utils/path-utils.ts';
+import { createApiRouter } from "./router.ts";
+import getIPAddress from './middlewares/get-ip.ts';
+import swaggerFile from "./swagger-output.json" with { type: "json" };
+import SqliteController from './controllers/sqlite-controller.ts';
 
 const startServer = async () => {
 
     const PORT = process.env.HTTP_PORT || 4000
     const HOSTNAME = "http://" + getIPAddress()
-
-    // --- Código para substituir __dirname ---
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    // ---------------------------------------
 
     // App Express
     const app = express()
@@ -53,7 +47,7 @@ const startServer = async () => {
     // Rotas
     app.use('/', apiRouter)
 
-    app.use(favicon(path.join(__dirname, '/../images/favicon.ico')));
+    app.use(favicon(path.join(PathUtils.__dirname, '../../images/favicon.ico')));
 
     // Resposta padrão para quaisquer outras requisições:
     app.use((req, res) => {

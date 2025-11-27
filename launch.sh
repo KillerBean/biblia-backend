@@ -10,6 +10,11 @@ if [ -f "$folder" ] ; then
     rm -r "$folder"
 fi
 
+if [ "$#" -eq 0 ] ; then
+    echo "No arguments provided. Use -h or --help for help."
+    exit 1
+fi
+
 for i in "$@"; do
     case $i in
         -d|--down)

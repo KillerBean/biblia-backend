@@ -5,6 +5,7 @@ import { open } from 'sqlite';
 import { readdir } from 'node:fs/promises';
 import PathUtils from '../utils/path-utils.ts';
 import { join } from 'node:path';
+import { BibleParser } from '../utils/bible-parser.ts';
 
 class SqliteController implements IController{
     dbController: DBClassSqlite | undefined;
@@ -73,6 +74,24 @@ class SqliteController implements IController{
     async getVerses(bookID?:number, chapterID?:number){
         const verses = this.dbController ? await this.dbController.getVerses(bookID, chapterID) : [];
         return verses
+    }
+
+    async search(query: string) {
+        if (!this.dbController) return [];
+        
+        const parsedQuery = BibleParser.parse(query);
+        
+        if (parsedQuery.type === 'text') {
+            return await this.dbController.searchByText(parsedQuery.text || '');
+        } else if (parsedQuery.type === 'reference' && parsedQuery.references) {
+            let allVerses: any[] = [];
+            for (const ref of parsedQuery.references) {
+                const verses = await this.dbController.getVersesByReference(ref);
+                allVerses = allVerses.concat(verses);
+            }
+            return allVerses;
+        }
+        return [];
     }
 }
 export default SqliteController

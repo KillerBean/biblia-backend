@@ -5,4 +5,5 @@ export default interface IController{
     getBooksByTestament(testamentID:number):Promise<any>;
     getVerses(bookID?:number, chapterID?:number):Promise<any[]>;
     getBooks(testamentId?:number):Promise<any>;
+    search(query: string): Promise<any[]>;
 }

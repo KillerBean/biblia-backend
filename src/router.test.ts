@@ -89,4 +89,16 @@ describe('API Endpoints', () => {
     expect(Array.isArray(res.body)).toBe(true);
     expect(mockController.getVersionList).toHaveBeenCalled();
   });
+
+  it('GET /search should return search results', async () => {
+    const res = await request(app).get('/search?q=Deus');
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(mockController.search).toHaveBeenCalledWith('Deus');
+  });
+
+  it('GET /search without query should return 400', async () => {
+    const res = await request(app).get('/search');
+    expect(res.statusCode).toEqual(400);
+  });
 });

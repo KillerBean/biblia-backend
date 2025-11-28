@@ -72,10 +72,10 @@ export const createApiRouter = (dbController: IController) => {
     })
 
     apiRouter.get('/search', async (req, res, next) => {
-        // #swagger.parameters['q'] = { in: 'query', type: 'string' }
-        const query = req.query.q as string;
+        // #swagger.parameters['query'] = { in: 'query', type: 'string' }
+        const query = req.query.query as string;
         if (!query) {
-            res.status(400).send('Missing query parameter "q"');
+            res.status(400).send('Missing query parameter "query"');
             return;
         }
         const result = await dbController.search(query);

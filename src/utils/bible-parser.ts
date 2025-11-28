@@ -81,37 +81,55 @@ export class BibleParser {
     }
 
     private static parseChapterAndVerses(bookId: number, rest: string): Reference {
-        const cleanRest = rest.replaceAll(/\s*([:\-,])\s*/g, '$1');
-        const chapMatch = new RegExp(/^(\d+)(.*)$/).exec(cleanRest);
+        // rest is "3:16" or "3" or "3:1-5"
+        // Regex: Start with digits (Chapter), optionally followed by separator (:, -) and the rest (Verse part)
+        // We treat ',' as a separator here too, although often used for lists.
+        // But "Jo 3,16" is common for Chapter 3, Verse 16.
+        const match = /^(\d+)(?:\s*([:\-,])\s*(.*))?$/.exec(rest);
         
-        if (!chapMatch) {
-            return { bookId };
+        if (!match) {
+            // If strictly no match (shouldn't happen if rest starts with digit), try simple digit extraction
+             const simpleMatch = /^(\d+)/.exec(rest);
+             if (simpleMatch) {
+                 return { bookId, chapter: Number.parseInt(simpleMatch[0]) };
+             }
+             return { bookId };
         }
 
-        const chapter = Number.parseInt(chapMatch[1]);
-        const remainder = chapMatch[2];
+        const chapter = Number.parseInt(match[1]);
+        const separator = match[2];
+        const versePart = match[3];
 
-        if (!remainder) {
-            return { bookId, chapter };
+        if (!separator || !versePart) {
+             return { bookId, chapter };
         }
-
-        const separator = remainder[0];
-        const afterSep = remainder.substring(1);
 
         if (separator === '-') {
-            const endChapMatch = new RegExp(/^(\d+)/).exec(afterSep);
-            if (endChapMatch) {
-                return { 
+             // Check for chapter range like "1-3"
+             // If versePart contains only digits, it's a chapter range.
+             // But wait, what if it's "Mateus 5:1-10"? That logic is inside parseVerses typically.
+             // But here we are parsing "Book C-C".
+             // If separator is '-', we assume Chapter-Chapter range UNLESS it looks like verses?
+             // The prompt said: "Gênesis 1-3 (Gênesis capítulos 1 a 3 completos)"
+             // So "Book C-C" is chapter range.
+             
+             const endChapMatch = /^(\d+)$/.exec(versePart);
+             if (endChapMatch) {
+                 return { 
                     bookId, 
                     chapter, 
                     endChapter: Number.parseInt(endChapMatch[1]) 
-                };
-            }
-        } else if (separator === ':' || separator === ',') {
-            return this.parseVerses(bookId, chapter, afterSep);
+                 };
+             }
+             // If versePart is not just a number, maybe it's complex? 
+             // For now, stick to simple chapter range.
+             return { bookId, chapter };
         }
 
-        return { bookId, chapter };
+        // separator is : or ,
+        // "Jo 3,16" -> separator , -> verse 16.
+        // "Jo 3:16" -> separator : -> verse 16.
+        return this.parseVerses(bookId, chapter, versePart);
     }
 
     private static parseSingleReference(input: string): Reference | null {

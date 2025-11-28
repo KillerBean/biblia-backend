@@ -1,4 +1,3 @@
-
 import { BibleParser } from './bible-parser.ts';
 
 describe('BibleParser', () => {
@@ -10,6 +9,18 @@ describe('BibleParser', () => {
         expect(result.references).toHaveLength(1);
         expect(result.references![0]).toEqual({
             bookId: 43, // João
+            chapter: 3,
+            verse: 16
+        });
+    });
+
+    // Scenario 1b: Chapter and Verse with colon
+    it('should parse "Chapter and Verse" with colon separator (Jo 3:16)', () => {
+        const result = BibleParser.parse('Jo 3:16');
+        expect(result.type).toBe('reference');
+        expect(result.references).toHaveLength(1);
+        expect(result.references![0]).toEqual({
+            bookId: 43,
             chapter: 3,
             verse: 16
         });

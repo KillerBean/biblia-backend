@@ -59,78 +59,74 @@ export class BibleParser {
         return references;
     }
 
-    private static parseSingleReference(input: string): Reference | null {
-        // 1. Identify Book
+    private static findBookMatch(input: string): { bookId: number; length: number } {
         let bestMatchBookId = 0;
         let bestMatchLen = 0;
 
-        // Normalize input for book search (lowercase)
         const lowerInput = input.toLowerCase();
 
         for (const key of Object.keys(BOOK_MAP)) {
             if (lowerInput.startsWith(key)) {
-                // Ensure boundary (space or digit or end of string)
                 const nextChar = lowerInput[key.length];
                 if (!nextChar || /[\d\s.:,-]/.test(nextChar)) {
-                     if (key.length > bestMatchLen) {
-                         bestMatchBookId = BOOK_MAP[key];
-                         bestMatchLen = key.length;
-                     }
+                    if (key.length > bestMatchLen) {
+                        bestMatchBookId = BOOK_MAP[key];
+                        bestMatchLen = key.length;
+                    }
                 }
             }
         }
 
-        if (bestMatchBookId === 0) return null;
+        return { bookId: bestMatchBookId, length: bestMatchLen };
+    }
 
-        // 2. Parse Location
-        const rest = input.substring(bestMatchLen).trim();
-        if (rest.length === 0) return null; // Just book name? Maybe support it later (Book search), but for now null or Whole Book?
-        // If user types "Genesis", maybe they want the whole book.
-        // Let's support Whole Book.
-        if (rest === '') return { bookId: bestMatchBookId };
-
-        // Regex to parse Chapter and Verses
-        // Cases:
-        // 1. Chapter only: "3"
-        // 2. Chapter Range: "1-3"
-        // 3. Chapter:Verse : "3:16" or "3,16"
-        // 4. Chapter:Range : "3:16-18"
-        // 5. Chapter:List : "3:16,18"
-        
-        // Clean spaces around separators
-        const cleanRest = rest.replace(/\s*([:\-,])\s*/g, '$1');
-
-        // Regex for Chapter Start
+    private static parseChapterAndVerses(bookId: number, rest: string): Reference {
+        const cleanRest = rest.replaceAll(/\s*([:\-,])\s*/g, '$1');
         const chapMatch = new RegExp(/^(\d+)(.*)$/).exec(cleanRest);
-        if (!chapMatch) return { bookId: bestMatchBookId }; // Fallback to book only if no number
+        
+        if (!chapMatch) {
+            return { bookId };
+        }
 
         const chapter = Number.parseInt(chapMatch[1]);
         const remainder = chapMatch[2];
 
         if (!remainder) {
-            return { bookId: bestMatchBookId, chapter };
+            return { bookId, chapter };
         }
 
-        // Check first separator
         const separator = remainder[0];
         const afterSep = remainder.substring(1);
 
         if (separator === '-') {
-            // Chapter Range: 1-3
             const endChapMatch = new RegExp(/^(\d+)/).exec(afterSep);
             if (endChapMatch) {
                 return { 
-                    bookId: bestMatchBookId, 
+                    bookId, 
                     chapter, 
                     endChapter: Number.parseInt(endChapMatch[1]) 
                 };
             }
         } else if (separator === ':' || separator === ',') {
-            // Verse(s)
-            return this.parseVerses(bestMatchBookId, chapter, afterSep);
+            return this.parseVerses(bookId, chapter, afterSep);
         }
 
-        return { bookId: bestMatchBookId, chapter };
+        return { bookId, chapter };
+    }
+
+    private static parseSingleReference(input: string): Reference | null {
+        const { bookId: bestMatchBookId, length: bestMatchLen } = this.findBookMatch(input);
+
+        if (bestMatchBookId === 0) {
+            return null;
+        }
+
+        const rest = input.substring(bestMatchLen).trim();
+        if (rest.length === 0) {
+            return { bookId: bestMatchBookId };
+        }
+
+        return this.parseChapterAndVerses(bestMatchBookId, rest);
     }
 
     private static parseVerses(bookId: number, chapter: number, versePart: string): Reference {

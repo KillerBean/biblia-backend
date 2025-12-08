@@ -12,7 +12,7 @@ import swaggerFile from "./swagger-output.json" with { type: "json" };
 import SqliteController from './controllers/sqlite-controller.ts';
 
 
-const PORT = process.env.HTTP_PORT || 4000
+const PORT = process.env.HTTP_PORT || 3333
 const HOSTNAME = "http://" + getIPAddress()
 
 // App Express

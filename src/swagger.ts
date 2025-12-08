@@ -61,8 +61,8 @@ const doc = {
     }
 };
 
-const outputFile = './swagger-output.json';
-const endpointsFiles = ['./index', './router'];
+const outputFile = './src/swagger-output.json';
+const endpointsFiles = ['./src/index.ts', './src/router.ts'];
 
 try {
     await swaggerAutogen(swaggerOptions)(outputFile, endpointsFiles, doc);

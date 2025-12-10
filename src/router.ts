@@ -9,7 +9,9 @@ export const createApiRouter = (dbController: IController) => {
     })
 
     apiRouter.get('/books', async (req, res, next) => {
-        const books = await dbController.getBooks()
+        // #swagger.parameters['name'] = { in: 'query', type: 'string' }
+        const name = req.query.name as string;
+        const books = await dbController.getBooks(name)
         res.send(books)
     })
 
@@ -22,6 +24,28 @@ export const createApiRouter = (dbController: IController) => {
         }
         
         let result = await dbController.getBookByID(bookId)
+        if (!result) {
+            res.status(404).send('Book not found');
+            return;
+        }
+        res.json(result)
+    })
+
+    apiRouter.get('/books/:bookId/chapters', async (req, res, next) => {
+        // #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
+        let bookId = Number.parseInt(req.params.bookId)
+        if(Number.isNaN(bookId)){
+            res.status(400).send('Invalid book ID')
+            return
+        }
+        
+        let result = await dbController.getChapterCount(bookId)
+        // If result is empty, it might mean book doesn't exist or has no chapters.
+        // Assuming book exists check is implicitly done by empty result.
+        if (!result || result.length === 0) {
+             res.status(404).send('Book not found or has no chapters')
+             return
+        }
         res.json(result)
     })
 
@@ -53,16 +77,20 @@ export const createApiRouter = (dbController: IController) => {
         /**
          *  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
          *  #swagger.parameters['chapterId'] = { in: 'path', type: 'number' }
+         *  #swagger.parameters['start'] = { in: 'query', type: 'number' }
+         *  #swagger.parameters['end'] = { in: 'query', type: 'number' }
          * */
         let bookId = Number.parseInt(req.params.bookId)
         let chapterId = Number.parseInt(req.params.chapterId)
+        let start = req.query.start ? Number.parseInt(req.query.start as string) : undefined
+        let end = req.query.end ? Number.parseInt(req.query.end as string) : undefined
         
         if(Number.isNaN(bookId) || Number.isNaN(chapterId)){
             res.status(400).send('Invalid book ID or chapter')
             return
         }
         
-        let result = await dbController.getVerses(bookId, chapterId)
+        let result = await dbController.getVerses(bookId, chapterId, start, end)
         res.json(result)
     })
 

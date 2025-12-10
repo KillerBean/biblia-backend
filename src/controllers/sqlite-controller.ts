@@ -36,10 +36,6 @@ class SqliteController implements IController{
             "perfeito e perfeitamente habilitado para toda boa obra.\n- 2 Timóteo 3:16-17"
         }
     }
-        
-    getByID(id: number) {
-        return `${id}`
-    }
     
     // TODO: create a method to get the list of versions from postgres
     async getVersionList(){
@@ -61,18 +57,26 @@ class SqliteController implements IController{
 
     async getBookByID(bookID:number){
         let book = await this.dbController?.getBookByID(bookID)
-        return book || []
+        if (!book || (Array.isArray(book) && book.length === 0)) return null;
+        return book
     }
-    async getBooks() {
-        const books = await this.dbController?.getBooks() || [];
+
+    async getBooks(search?: string) {
+        const books = await this.dbController?.getBooks(search) || [];
         return books
     }
+
+    async getChapterCount(bookID: number) {
+        return await this.dbController?.getChapterCount(bookID) || [];
+    }
+
     async getBooksByTestament(testamentID:number){
         const books = await this.dbController?.getBooksByTestament(testamentID) || [];
         return books
     }
-    async getVerses(bookID?:number, chapterID?:number){
-        const verses = this.dbController ? await this.dbController.getVerses(bookID, chapterID) : [];
+
+    async getVerses(bookID?:number, chapterID?:number, start?: number, end?: number){
+        const verses = this.dbController ? await this.dbController.getVerses(bookID, chapterID, start, end) : [];
         return verses
     }
 
@@ -95,4 +99,3 @@ class SqliteController implements IController{
     }
 }
 export default SqliteController
-// export default new SqliteController()

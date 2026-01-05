@@ -13,14 +13,6 @@ export default class DBClassSqlite {
         return row || []
     }
 
-    async initIndexes() {
-        await this.db.exec(`
-            CREATE INDEX IF NOT EXISTS idx_book_name ON book(name);
-            CREATE INDEX IF NOT EXISTS idx_verse_book_chapter_verse ON verse(book_id, chapter, verse);
-            CREATE INDEX IF NOT EXISTS idx_verse_text ON verse(text);
-        `);
-    }
-
     async getBooks(search?: string){
         let sql = 'SELECT * FROM book';
         let params: string[] = [];

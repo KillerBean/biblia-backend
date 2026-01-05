@@ -26,7 +26,6 @@ class SqliteController implements IController{
         })
         
         this.dbController = new DBClassSqlite(db)
-        await this.dbController.initIndexes();
     }
     
     index(){

@@ -3,18 +3,28 @@ import express from 'express';
 import { jest } from '@jest/globals';
 import MockSqliteController from './__mocks__/sqlite-controller.ts';
 
-// Mock the entire module
+// Mocking for ESM requires unstable_mockModule
+jest.unstable_mockModule('./services/redis-service.ts', () => ({
+  default: {
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue('OK'),
+    on: jest.fn(),
+  },
+}));
+
+// Mock the entire controller module (this one seems to work fine with standard mock, but for consistency...)
 jest.mock('./controllers/sqlite-controller.ts');
 
 let app: express.Application;
+let mockController: MockSqliteController;
 
 describe('API Endpoints', () => {
-  let mockController: MockSqliteController;
-
   beforeAll(async () => {
+    // Import router dynamically AFTER mocking
+    const { createApiRouter } = await import('./router.ts');
     
     mockController = await MockSqliteController.create();
-    const apiRouter = (await import('./router.ts')).createApiRouter(mockController);
+    const apiRouter = createApiRouter(mockController);
     app = express();
     app.use('/', apiRouter);
   });

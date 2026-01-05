@@ -1,8 +1,12 @@
 import express from 'express'
 import IController from './controllers/controller-interface.ts'
+import { cacheMiddleware } from './middlewares/cache.ts'
 
 export const createApiRouter = (dbController: IController) => {
     const apiRouter = express.Router()
+
+    // Cache de 1 hora para rotas gerais
+    apiRouter.use(cacheMiddleware(3600));
 
     apiRouter.get('/', (req, res, next) => {
         res.send(dbController?.index())

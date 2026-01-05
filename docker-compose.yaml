@@ -8,9 +8,13 @@ services:
     hostname: app-01
     networks:
       - nginx_net
-    # depends_on: db # Removed as App currently uses SQLite
+    depends_on:
+      redis:
+        condition: service_started
     env_file:
       - ./.env
+    environment:
+      - REDIS_HOST=redis
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333/"]
       interval: 30s
@@ -35,7 +39,19 @@ services:
     networks:
       - nginx_net
   
-  # Postgres service kept for future migration, but app doesn't depend on it currently
+  redis:
+    image: redis:alpine
+    container_name: biblia-backend-redis
+    restart: always
+    networks:
+      - nginx_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Postgres service kept for future migration
   db:
     container_name: biblia-backend-db
     image: postgres:18.1-alpine

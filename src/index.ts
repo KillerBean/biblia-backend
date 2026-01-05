@@ -2,6 +2,8 @@ import 'dotenv/config';
 import cors from 'cors';
 import path from 'node:path';
 import express from 'express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import favicon from 'serve-favicon';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +19,22 @@ const HOSTNAME = "http://" + getIPAddress()
 
 // App Express
 const app = express()
+
+// Security Middleware
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+app.use(limiter)
+
+// Trust Proxy (for Nginx)
+app.set('trust proxy', 1);
+
 const corsOptions = {
     origin: [`${HOSTNAME}:${PORT}`],
     optionsSuccessStatus: 200

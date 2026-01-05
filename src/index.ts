@@ -35,17 +35,16 @@ app.use(limiter)
 // Trust Proxy (for Nginx)
 app.set('trust proxy', 1);
 
+// Adjust Swagger server URL dynamically to be relative
+// @ts-ignore
+swaggerFile.servers = [{ url: '/' }];
+
+
 const corsOptions = {
-    origin: [`${HOSTNAME}:${PORT}`],
+    origin: process.env.NODE_ENV === 'development' ? true : [`${HOSTNAME}:${PORT}`],
     optionsSuccessStatus: 200
 };
 
-if (process.env.NODE_ENV === 'development') {
-    let localAddresses = [`http://localhost:${PORT}`, 'http://localhost'];
-    for (let item of localAddresses){
-        corsOptions.origin.push(item);
-    }
-}
 
 /* Middlewares */
 // Switch off the default 'X-Powered-By: Express' header

@@ -1,7 +1,6 @@
 networks:
   nginx_net:
     driver: bridge
-    
 
 services:
   app-01: &app
@@ -9,31 +8,38 @@ services:
     hostname: app-01
     networks:
       - nginx_net
-    depends_on:
-      - db
+    # depends_on: db # Removed as App currently uses SQLite
     env_file:
       - ./.env
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   
   app-02:
     <<: *app
     hostname: app-02
 
-  nginx: # Load Balancer
+  nginx:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - app-01
-      - app-02
+      app-01:
+        condition: service_healthy
+      app-02:
+        condition: service_healthy
     ports:
       - "80:80"
-    
     networks:
       - nginx_net
   
+  # Postgres service kept for future migration, but app doesn't depend on it currently
   db:
     container_name: biblia-backend-db
     image: postgres:18.1-alpine
+    restart: unless-stopped
     environment:
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -41,8 +47,12 @@ services:
     volumes:
        - ./docker/postgres/postgres.conf:/etc/postgresql.conf
        - ./docker/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
+       - postgres_data:/var/lib/postgresql/data
     command: 'postgres -c config_file="/etc/postgresql.conf" -c "max_connections=450"'
     networks:
       - nginx_net
     env_file:
       - ./.env
+
+volumes:
+  postgres_data:

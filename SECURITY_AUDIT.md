@@ -16,23 +16,23 @@
 |---|----------|-------|--------|
 | A1 | Sem error handler global — stack traces podem vazar | `src/index.ts` | ✅ Corrigido |
 | A2 | 404 handler não envia body | `src/index.ts:69-71` | ✅ Corrigido |
-| A3 | Rate limit único global — `/search` deveria ter limite mais restrito | `src/index.ts:27-32` | Pendente |
+| A3 | Rate limit único global — `/search` deveria ter limite mais restrito | `src/index.ts:27-32` | ✅ Corrigido |
 | A4 | Sem limite de tamanho de request | `src/index.ts` | ✅ Corrigido (bodyParser limit) |
 
 ## MÉDIO
 
 | # | Problema | Local | Status |
 |---|----------|-------|--------|
-| M1 | Sem Content-Security-Policy header | `nginx.conf` | Pendente |
-| M2 | `X-XSS-Protection` depreciado | `nginx.conf:41` | Pendente |
-| M3 | CORS irrestrito em dev (`origin: true`) | `src/index.ts:44` | Pendente |
-| M4 | HOSTNAME via auto-detect de IP sem validação | `src/index.ts:18` | Pendente |
+| M1 | Sem Content-Security-Policy header | `nginx.conf` | ✅ Corrigido |
+| M2 | `X-XSS-Protection` depreciado | `nginx.conf:41` | ✅ Corrigido |
+| M3 | CORS irrestrito em dev (`origin: true`) | `src/index.ts:44` | ✅ Corrigido |
+| M4 | HOSTNAME via auto-detect de IP sem validação | `src/index.ts:18` | ✅ Corrigido |
 
 ## BAIXO
 
 | # | Problema | Local | Status |
 |---|----------|-------|--------|
-| B1 | `console.log` em código de produção | `src/services/redis-service.ts` | Pendente |
+| B1 | `console.log` em código de produção | `src/services/redis-service.ts` | ✅ Corrigido |
 | B2 | Sem `package-lock.json` | `/` | Pendente |
 | B3 | Versões de pacotes com `^` — permite atualizações automáticas | `package.json` | Pendente |
 

@@ -15,7 +15,7 @@ import SqliteController from './controllers/sqlite-controller.ts';
 
 
 const PORT = process.env.HTTP_PORT || 3333
-const HOSTNAME = "http://" + getIPAddress()
+const HOSTNAME = process.env.HOSTNAME || ("http://" + getIPAddress())
 
 // App Express
 const app = express()
@@ -25,11 +25,19 @@ app.use(helmet());
 
 // Rate Limiting
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+	windowMs: 15 * 60 * 1000,
+	limit: 100,
+	standardHeaders: true,
+	legacyHeaders: false,
 })
+
+const searchLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	limit: 20,
+	standardHeaders: true,
+	legacyHeaders: false,
+})
+
 app.use(limiter)
 
 // Trust Proxy (for Nginx)
@@ -40,8 +48,12 @@ app.set('trust proxy', 1);
 swaggerFile.servers = [{ url: '/' }];
 
 
+const allowedOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : [`${HOSTNAME}:${PORT}`]
+
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'development' ? true : [`${HOSTNAME}:${PORT}`],
+    origin: allowedOrigins,
     optionsSuccessStatus: 200
 };
 
@@ -58,7 +70,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Cria o controller e o roteador
 const dbController = await SqliteController.create();
-const apiRouter = createApiRouter(dbController);
+const apiRouter = createApiRouter(dbController, searchLimiter);
 
 // Rotas
 app.use('/', apiRouter)

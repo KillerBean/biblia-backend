@@ -4,7 +4,9 @@ const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = Number(process.env.REDIS_PORT) || 6379;
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD || undefined;
 
-console.log(`🔌 Conectando ao Redis em ${REDIS_HOST}:${REDIS_PORT}`);
+if (process.env.NODE_ENV !== 'production') {
+    console.log(`Conectando ao Redis em ${REDIS_HOST}:${REDIS_PORT}`);
+}
 
 const redisClient = new Redis({
     host: REDIS_HOST,
@@ -23,7 +25,9 @@ redisClient.on('error', (err: { message: any; }) => {
 });
 
 redisClient.on('connect', () => {
-    console.log('✅ Conectado ao Redis com sucesso!');
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('Conectado ao Redis com sucesso!');
+    }
 });
 
 export default redisClient;

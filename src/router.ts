@@ -1,8 +1,8 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import IController from './controllers/controller-interface.ts'
 import { cacheMiddleware } from './middlewares/cache.ts'
 
-export const createApiRouter = (dbController: IController) => {
+export const createApiRouter = (dbController: IController, searchLimiter: RequestHandler) => {
     const apiRouter = express.Router()
 
     // Cache de 1 hora para rotas gerais
@@ -111,7 +111,7 @@ export const createApiRouter = (dbController: IController) => {
         res.send(versions)
     })
 
-    apiRouter.get('/search', async (req, res, next) => {
+    apiRouter.get('/search', searchLimiter, async (req, res, next) => {
         // #swagger.parameters['query'] = { in: 'query', type: 'string' }
         const query = req.query.query as string;
         if (!query) {

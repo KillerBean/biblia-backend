@@ -88,9 +88,17 @@ export const createApiRouter = (dbController: IController) => {
         let chapterId = Number.parseInt(req.params.chapterId)
         let start = req.query.start ? Number.parseInt(req.query.start as string) : undefined
         let end = req.query.end ? Number.parseInt(req.query.end as string) : undefined
-        
+
         if(Number.isNaN(bookId) || Number.isNaN(chapterId)){
             res.status(400).send('Invalid book ID or chapter')
+            return
+        }
+        if (start !== undefined && (Number.isNaN(start) || start < 1)) {
+            res.status(400).send('Invalid start verse')
+            return
+        }
+        if (end !== undefined && (Number.isNaN(end) || end < 1)) {
+            res.status(400).send('Invalid end verse')
             return
         }
         
@@ -108,6 +116,10 @@ export const createApiRouter = (dbController: IController) => {
         const query = req.query.query as string;
         if (!query) {
             res.status(400).send('Missing query parameter "query"');
+            return;
+        }
+        if (query.length > 200) {
+            res.status(400).send('Query too long (max 200 characters)');
             return;
         }
         const result = await dbController.search(query);

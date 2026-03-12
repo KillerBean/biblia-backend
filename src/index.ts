@@ -49,7 +49,7 @@ const corsOptions = {
 /* Middlewares */
 // Switch off the default 'X-Powered-By: Express' header
 app.disable( 'x-powered-by' );
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50kb' }));
 
 // Cors
 app.use(cors(corsOptions))
@@ -67,7 +67,13 @@ app.use(favicon(path.join(PathUtils.__dirname, '../../images/favicon.ico')));
 
 // Resposta padrão para quaisquer outras requisições:
 app.use((req, res) => {
-    res.status(404)
+    res.status(404).send('Not Found')
+})
+
+// Error handler global
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack)
+    res.status(500).send('Internal Server Error')
 })
 
 // Inicia o sevidor

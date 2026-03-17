@@ -10,8 +10,10 @@ import swaggerUi from 'swagger-ui-express';
 import PathUtils  from './utils/path-utils.ts';
 import { createApiRouter } from "./router.ts";
 import getIPAddress from './middlewares/get-ip.ts';
+import { loggerMiddleware } from './middlewares/logger.ts';
 import swaggerFile from "./swagger-output.json" with { type: "json" };
 import SqliteController from './controllers/sqlite-controller.ts';
+import redisClient from './services/redis-service.ts';
 
 
 const PORT = process.env.HTTP_PORT || 3333
@@ -61,6 +63,7 @@ const corsOptions = {
 /* Middlewares */
 // Switch off the default 'X-Powered-By: Express' header
 app.disable( 'x-powered-by' );
+app.use(loggerMiddleware);
 app.use(bodyParser.json({ limit: '50kb' }));
 
 // Cors
@@ -89,6 +92,13 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 })
 
 // Inicia o sevidor
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Servidor rodando com sucesso ${HOSTNAME}:${PORT}`)
+})
+
+process.on('SIGTERM', () => {
+    server.close(async () => {
+        await redisClient.quit()
+        process.exit(0)
+    })
 })

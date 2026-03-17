@@ -46,9 +46,68 @@ Each translation is a separate `.sqlite` file with tables: `book`, `verse`, `tes
 
 ## Environment Variables
 
-- `HTTP_PORT` - Server port (default: 3333)
-- `NODE_ENV` - development/production (affects CORS strictness)
-- `REDIS_HOST`, `REDIS_PORT` - Redis connection (default port: 6379)
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `HTTP_PORT` | `3333` | Server port |
+| `NODE_ENV` | — | `development` ou `production` (afeta CORS) |
+| `HOSTNAME` | IP detectado | Base URL para CORS |
+| `CORS_ORIGINS` | `HOSTNAME:PORT` | Origins permitidas (separadas por vírgula) |
+| `REDIS_HOST` | `localhost` | Redis host |
+| `REDIS_PORT` | `6379` | Redis port |
+| `REDIS_PASSWORD` | — | **Obrigatório em produção** — autenticação Redis |
+
+Copie `.env.dev.example` para `.env` antes de rodar localmente.
+
+## Testing
+
+| Nível | O que testa | Mocks | Ferramentas |
+|-------|-------------|-------|-------------|
+| **Unit — utils** | Bible parser, book mappings, lógica pura | ❌ | Jest |
+| **Integration** | Rotas HTTP end-to-end (SQLite real + Redis mockado) | Redis apenas | Jest + supertest |
+
+Testes rodam no `docker build` (CI) — o Dockerfile executa `npm test` na stage builder.
+
+## Security
+
+Ver [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) para o audit completo.
+
+Medidas em vigor:
+- Rate limiting: 100 req/15min global, 20 req/15min em `/search`
+- Redis autenticado via `REDIS_PASSWORD`
+- Helmet + CSP via Nginx
+- Body limit: 50kb
+- Validação de input em todos os query params
+- CORS restrito por `CORS_ORIGINS` (não `*` em produção)
+
+Pending do audit: fixar versões de pacotes (remover `^`) e commitar `package-lock.json`.
+
+## Structured Logging
+
+Adicionar middleware de logging estruturado para todo request:
+```ts
+{ requestId: uuid(), method, path, status, durationMs, ip }
+```
+Nunca logar conteúdo de busca que possa conter PII. Use `requestId` gerado no início do request.
+
+## Graceful Shutdown
+
+Express deve capturar `SIGTERM` (enviado pelo Docker ao parar o container):
+```ts
+process.on('SIGTERM', async () => {
+  server.close(async () => {
+    await redisClient.quit()
+    process.exit(0)
+  })
+})
+```
+O Dockerfile usa `CMD ["npx", "tsx", "src/index.ts"]` — garanta que o processo Express seja PID 1 (sem `sh -c`).
+
+## Docker & Imagens
+
+- Dockerfile: multi-stage (builder roda testes + cria índices SQLite; runner usa `USER node`)
+- Nunca usar `:latest` em produção — tag com SHA do commit (`ghcr.io/killerbean/biblia-backend:<sha>`)
+- `docker-compose.yaml` usa `:latest` apenas para dev/local — deploy no VPS via `deploy.sh` com tag SHA
+- Manter 3 imagens no GHCR para rollback rápido
 
 ## API Documentation
 

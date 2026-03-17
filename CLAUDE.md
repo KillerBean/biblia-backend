@@ -26,8 +26,10 @@ npm start            # Production start (no hot reload)
 
 ### Request Flow
 ```
-Nginx (load balancer) → Express instances (app-01, app-02) → Redis cache → SQLite
+Nginx → Express (app) → Redis cache → SQLite
 ```
+
+> **Uma única instância** é suficiente: a API é read-only e stateless, com Redis cacheando tudo por 1h. Se o container cair, o Docker reinicia em segundos. Economiza ~80–100 MB de RAM na VPS. Para escalar, basta adicionar `app-02` de volta ao compose e ao upstream do nginx.
 
 ### Directory Structure
 - `src/controllers/` - Database controllers implementing `IController` interface

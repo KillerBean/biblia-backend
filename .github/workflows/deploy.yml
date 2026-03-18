@@ -59,8 +59,8 @@ jobs:
           tags: |
             ghcr.io/killerbean/biblia-backend:latest
             ghcr.io/killerbean/biblia-backend:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/luisroseno/biblia-backend:buildcache
-          cache-to: type=registry,ref=ghcr.io/luisroseno/biblia-backend:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache
+          cache-to: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache,mode=max
 
       - name: Port knock para abrir SSH
         run: |

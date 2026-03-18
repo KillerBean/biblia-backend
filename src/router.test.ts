@@ -24,7 +24,8 @@ describe('API Endpoints', () => {
     const { createApiRouter } = await import('./router.ts');
     
     mockController = await MockSqliteController.create();
-    const apiRouter = createApiRouter(mockController);
+    const noopMiddleware: express.RequestHandler = (_req, _res, next) => next();
+    const apiRouter = createApiRouter(mockController, noopMiddleware);
     app = express();
     app.use('/', apiRouter);
   });

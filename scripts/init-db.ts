@@ -29,7 +29,10 @@ async function init() {
                 CREATE INDEX IF NOT EXISTS idx_verse_book_chapter_verse ON verse(book_id, chapter, verse);
                 CREATE INDEX IF NOT EXISTS idx_verse_text ON verse(text);
             `);
-            
+
+            console.log('  - Configurando WAL mode...');
+            await db.run('PRAGMA journal_mode=WAL');
+
             await db.close();
             console.log(`  ✅ ${file} otimizado com sucesso.`);
         }

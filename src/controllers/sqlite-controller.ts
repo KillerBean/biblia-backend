@@ -24,7 +24,11 @@ class SqliteController implements IController{
             mode: sqlite3.OPEN_READONLY, // Specify the mode of the database
             driver: sqlite3.Database,
         })
-        
+
+        await db.run('PRAGMA cache_size=-65536');  // 64MB in-memory page cache
+        await db.run('PRAGMA temp_store=MEMORY');  // temp tables em RAM
+        await db.run('PRAGMA synchronous=NORMAL'); // safe com WAL, mais rápido que FULL
+
         this.dbController = new DBClassSqlite(db)
     }
     

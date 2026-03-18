@@ -66,7 +66,7 @@ const endpointsFiles = ['./src/index.ts', './src/router.ts'];
 
 try {
     await swaggerAutogen(swaggerOptions)(outputFile, endpointsFiles, doc);
-    await import('./index.ts'); // Your project's root file
+    process.exit(0);
 } catch (err) {
     console.error('Error generating swagger:', err);
     process.exit(1);

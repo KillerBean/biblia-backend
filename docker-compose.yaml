@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  app:
+  biblia-app:
     image: ghcr.io/killerbean/biblia-backend:latest
     hostname: app
     networks:
@@ -38,7 +38,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      app:
+      biblia-app:
         condition: service_healthy
     networks:
       - nginx_net

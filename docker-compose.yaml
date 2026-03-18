@@ -14,7 +14,7 @@ services:
       redis:
         condition: service_healthy
     env_file:
-      - ../biblia-backend/.env
+      - ./.env
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}

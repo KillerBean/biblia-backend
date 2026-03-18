@@ -15,6 +15,9 @@ COPY . .
 # Run tests
 RUN npm test
 
+# Gera documentação Swagger
+RUN npx tsx src/swagger.ts
+
 # OTIMIZAÇÃO: Cria os índices nos bancos SQLite durante o build
 RUN npx tsx scripts/init-db.ts
 

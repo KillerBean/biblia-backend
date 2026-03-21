@@ -8,15 +8,16 @@ REST API serving Bible text in Portuguese with multiple translations. Built with
 - **Framework:** Express.js
 - **Database:** SQLite (one file per translation)
 - **Cache:** Redis
-- **Reverse proxy:** Nginx (load balancer across two app instances)
+- **Reverse proxy:** Nginx
 - **Container:** Docker + GitHub Container Registry (`ghcr.io/killerbean/biblia-backend`)
 
 ## Architecture
 
 ```
-Client → Nginx → app-01 ┐
-                app-02 ┘ → Redis → SQLite
+Client → Nginx → biblia-app → Redis → SQLite
 ```
+
+> Uma única instância é suficiente: a API é read-only, stateless, e Redis cacheia por 1h. Se cair, Docker reinicia em segundos (~80-100 MB RAM). Para escalar, adicione `biblia-app-02` ao compose e upstream nginx.
 
 ## Translations
 
@@ -72,17 +73,25 @@ Copy `.env.dev.example` to `.env` and adjust values before running.
 The CI/CD pipeline (`.github/workflows/deploy.yml`) runs on pushes to the `prod` branch:
 
 1. Runs tests
-2. Builds and pushes Docker image to GHCR
-3. SSHs into VPS and runs `deploy.sh`
+2. Generates Swagger docs (`npm run swagger`)
+3. Builds and pushes Docker image to GHCR
+4. SSHs into VPS and runs `deploy.sh`
+
+**Compose files:**
+- `docker-compose.yaml` — Development (no resource limits)
+- `docker-compose.prod.yml` — Production (CPU/memory limits per container)
 
 ```bash
 # Manual deploy on VPS
 ./deploy.sh
 
-# Local Docker
+# Local Docker (development)
 ./launch.sh -a   # Full redeploy (down + up)
 ./launch.sh -u   # Build and start
 ./launch.sh -d   # Stop and remove
+
+# Production (if deploying locally)
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ## Security

@@ -16,6 +16,12 @@ import SqliteController from './controllers/sqlite-controller.ts';
 import redisClient from './services/redis-service.ts';
 
 
+// Guard: produção exige REDIS_PASSWORD
+if (process.env.NODE_ENV === 'production' && !process.env.REDIS_PASSWORD) {
+    console.error('FATAL: REDIS_PASSWORD required in production');
+    process.exit(1);
+}
+
 const PORT = process.env.HTTP_PORT || 3333
 const HOSTNAME = process.env.HOSTNAME || ("http://" + getIPAddress())
 
@@ -31,6 +37,7 @@ const limiter = rateLimit({
 	limit: 100,
 	standardHeaders: true,
 	legacyHeaders: false,
+	skip: (req) => req.path === '/health',
 })
 
 const searchLimiter = rateLimit({
@@ -75,6 +82,16 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 const dbController = await SqliteController.create();
 const apiRouter = createApiRouter(dbController, searchLimiter);
 
+// Health check — excluído do cache, rate limit e logger
+app.get('/health', async (req, res) => {
+    try {
+        await redisClient.ping();
+    } catch {
+        return res.status(503).json({ status: 'error', redis: 'disconnected', uptime: process.uptime() });
+    }
+    res.json({ status: 'ok', uptime: process.uptime(), redis: 'connected' });
+});
+
 // Rotas
 app.use('/', apiRouter)
 
@@ -87,8 +104,8 @@ app.use((req, res) => {
 
 // Error handler global
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error(err.stack)
-    res.status(500).send('Internal Server Error')
+    console.error(JSON.stringify({ event: 'error', requestId: res.locals.requestId, error: err.stack }));
+    res.status(500).json({ error: 'Internal Server Error', requestId: res.locals.requestId });
 })
 
 // Inicia o sevidor
@@ -96,9 +113,27 @@ const server = app.listen(PORT, () => {
     console.log(`Servidor rodando com sucesso ${HOSTNAME}:${PORT}`)
 })
 
-process.on('SIGTERM', () => {
+async function gracefulShutdown(signal: string) {
+    console.log(JSON.stringify({ event: 'shutdown', signal }));
+    const forceExit = setTimeout(() => {
+        console.error(JSON.stringify({ event: 'shutdown_timeout', signal }));
+        process.exit(1);
+    }, 30_000);
     server.close(async () => {
-        await redisClient.quit()
-        process.exit(0)
-    })
-})
+        clearTimeout(forceExit);
+        await redisClient.quit();
+        process.exit(0);
+    });
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
+
+process.on('unhandledRejection', (reason) => {
+    console.error(JSON.stringify({ event: 'unhandledRejection', reason: String(reason) }));
+});
+
+process.on('uncaughtException', (err: Error) => {
+    console.error(JSON.stringify({ event: 'uncaughtException', error: err.message }));
+    gracefulShutdown('uncaughtException');
+});

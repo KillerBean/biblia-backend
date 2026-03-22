@@ -65,8 +65,8 @@ describe('API Endpoints', () => {
   });
 
   it('GET /books/:bookId should return 404 if not found', async () => {
-    // Mock controller is set to return null for ID 999
-    const res = await request(app).get('/books/999');
+    // Mock controller is set to return null for ID 50
+    const res = await request(app).get('/books/50');
     expect(res.statusCode).toEqual(404);
   });
 
@@ -87,7 +87,7 @@ describe('API Endpoints', () => {
   });
 
   it('GET /books/:bookId/chapters should return 404 if book not found', async () => {
-    const res = await request(app).get('/books/999/chapters');
+    const res = await request(app).get('/books/50/chapters');
     expect(res.statusCode).toEqual(404);
   });
 

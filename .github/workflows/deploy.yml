@@ -56,9 +56,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/killerbean/biblia-backend:latest
-            ghcr.io/killerbean/biblia-backend:${{ github.sha }}
+          tags: ghcr.io/killerbean/biblia-backend:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache,mode=max
 
@@ -76,4 +74,4 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script: bash /opt/projects/biblia-backend/deploy.sh
+          script: IMAGE_TAG=${{ github.sha }} bash /opt/projects/biblia-backend/deploy.sh

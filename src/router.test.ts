@@ -6,8 +6,8 @@ import MockSqliteController from './__mocks__/sqlite-controller.ts';
 // Mocking for ESM requires unstable_mockModule
 jest.unstable_mockModule('./services/redis-service.ts', () => ({
   default: {
-    get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue('OK'),
+    get: jest.fn<() => Promise<string | null>>().mockResolvedValue(null),
+    set: jest.fn<() => Promise<string>>().mockResolvedValue('OK'),
     on: jest.fn(),
   },
 }));

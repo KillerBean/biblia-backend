@@ -1,0 +1,23 @@
+name: GHCR Cleanup
+
+on:
+  schedule:
+    - cron: '0 3 * * 0' # domingo às 03:00 UTC
+    - cron: '0 3 * * 3' # quarta às 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    name: Delete old container versions
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Limpar versões antigas do GHCR (manter 3)
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: biblia-backend
+          package-type: container
+          min-versions-to-keep: 3
+          ignore-versions: "^(buildcache|latest)$"

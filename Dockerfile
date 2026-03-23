@@ -1,5 +1,5 @@
 # Stage 1: Dependencies and Build
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Copy source code and scripts
 COPY . .
@@ -22,7 +22,7 @@ RUN npx tsx src/swagger.ts
 RUN npx tsx scripts/init-db.ts
 
 # Stage 2: Production Runner
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 

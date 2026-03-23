@@ -15,6 +15,10 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
     apiRouter.get('/books', async (req, res, next) => {
         // #swagger.parameters['name'] = { in: 'query', type: 'string' }
         const name = req.query.name as string;
+        if (name && name.length > 100) {
+            res.status(400).send('Query parameter "name" too long (max 100 characters)');
+            return;
+        }
         const books = await dbController.getBooks(name)
         res.send(books)
     })
@@ -22,7 +26,7 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
     apiRouter.get('/books/:bookId', async (req, res, next) => {
         //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
         let bookId = Number.parseInt(req.params.bookId)
-        if(Number.isNaN(bookId)){
+        if(Number.isNaN(bookId) || bookId < 1 || bookId > 66){
             res.status(400).send('Invalid book ID')
             return
         }
@@ -38,7 +42,7 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
     apiRouter.get('/books/:bookId/chapters', async (req, res, next) => {
         // #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
         let bookId = Number.parseInt(req.params.bookId)
-        if(Number.isNaN(bookId)){
+        if(Number.isNaN(bookId) || bookId < 1 || bookId > 66){
             res.status(400).send('Invalid book ID')
             return
         }
@@ -56,7 +60,7 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
     apiRouter.get('/books/testament/:testamentId', async (req, res, next) => {
         //  #swagger.parameters['testamentId'] = { in: 'path', type: 'number' }
         let testamentId = Number.parseInt(req.params.testamentId)
-        if(Number.isNaN(testamentId)){
+        if(Number.isNaN(testamentId) || testamentId < 1 || testamentId > 2){
             res.status(400).send('Invalid testament ID')
             return
         }
@@ -68,7 +72,7 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
     apiRouter.get('/verses/:bookId', async (req, res, next) => {
         //  #swagger.parameters['bookId'] = { in: 'path', type: 'number' }
         let bookId = Number.parseInt(req.params.bookId)
-        if(Number.isNaN(bookId)){
+        if(Number.isNaN(bookId) || bookId < 1 || bookId > 66){
             res.status(400).send('Invalid book ID')
             return
         }
@@ -89,15 +93,15 @@ export const createApiRouter = (dbController: IController, searchLimiter: Reques
         let start = req.query.start ? Number.parseInt(req.query.start as string) : undefined
         let end = req.query.end ? Number.parseInt(req.query.end as string) : undefined
 
-        if(Number.isNaN(bookId) || Number.isNaN(chapterId)){
+        if(Number.isNaN(bookId) || bookId < 1 || bookId > 66 || Number.isNaN(chapterId) || chapterId < 1 || chapterId > 150){
             res.status(400).send('Invalid book ID or chapter')
             return
         }
-        if (start !== undefined && (Number.isNaN(start) || start < 1)) {
+        if (start !== undefined && (Number.isNaN(start) || start < 1 || start > 176)) {
             res.status(400).send('Invalid start verse')
             return
         }
-        if (end !== undefined && (Number.isNaN(end) || end < 1)) {
+        if (end !== undefined && (Number.isNaN(end) || end < 1 || end > 176)) {
             res.status(400).send('Invalid end verse')
             return
         }

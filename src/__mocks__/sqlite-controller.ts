@@ -12,7 +12,7 @@ class MockSqliteController implements IController {
     getVersionList = jest.fn(async () => ['mock_version']);
     
     getBookByID = jest.fn(async (bookID: number) => {
-        if (bookID === 999) return null; // Simulate not found
+        if (bookID === 50) return null; // Simulate not found
         return { id: bookID, name: 'Mock Book' };
     });
     
@@ -22,7 +22,7 @@ class MockSqliteController implements IController {
     });
     
     getChapterCount = jest.fn(async (bookID: number) => {
-        if (bookID === 999) return []; // Simulate not found/empty
+        if (bookID === 50) return []; // Simulate not found/empty
         return [1, 2, 3];
     });
 

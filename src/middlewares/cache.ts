@@ -1,8 +1,17 @@
+import { createHash } from 'node:crypto';
 import { Request, Response, NextFunction } from 'express';
 import redisClient from '../services/redis-service.ts';
 
 // Duração padrão do cache: 1 hora (3600 segundos)
-const DEFAULT_CACHE_TTL = 3600; 
+const DEFAULT_CACHE_TTL = 3600;
+
+function buildCacheKey(req: Request): string {
+    // Hash SHA-256 da URL em todas as rotas:
+    // - Evita cache poisoning via req.originalUrl malformado
+    // - Em /search: impede exposição do conteúdo da busca no Redis
+    const hash = createHash('sha256').update(req.originalUrl).digest('hex');
+    return `cache:${req.path}:${hash}`;
+}
 
 export const cacheMiddleware = (duration: number = DEFAULT_CACHE_TTL) => {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -11,8 +20,7 @@ export const cacheMiddleware = (duration: number = DEFAULT_CACHE_TTL) => {
             return next();
         }
 
-        // A chave do cache é a URL completa (incluindo query params)
-        const key = `cache:${req.originalUrl}`;
+        const key = buildCacheKey(req);
 
         try {
             const cachedResponse = await redisClient.get(key);

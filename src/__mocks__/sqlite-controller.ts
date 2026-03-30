@@ -38,11 +38,13 @@ class MockSqliteController implements IController {
         }];
     });
     
-    search = jest.fn(async (query: string) => [{ 
-        id: 1, 
+    search = jest.fn(async (query: string) => [{
+        id: 1,
         text: 'Mock Search Result',
         book: { id: 1, name: 'Mock Book' }
     }]);
+
+    ping = jest.fn(async () => {});
 
     // A static create method to mimic the original class, but for the mock
     static async create(): Promise<MockSqliteController> {

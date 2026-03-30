@@ -84,12 +84,22 @@ const apiRouter = createApiRouter(dbController, searchLimiter);
 
 // Health check — excluído do cache, rate limit e logger
 app.get('/health', async (req, res) => {
+    const uptime = process.uptime();
+    const memoryMB = Math.round(process.memoryUsage().rss / 1024 / 1024);
+
     try {
         await redisClient.ping();
     } catch {
-        return res.status(503).json({ status: 'error', redis: 'disconnected', uptime: process.uptime() });
+        return res.status(503).json({ status: 'error', redis: 'disconnected', uptime, memoryMB });
     }
-    res.json({ status: 'ok', uptime: process.uptime(), redis: 'connected' });
+
+    try {
+        await dbController.ping();
+    } catch {
+        return res.status(503).json({ status: 'error', sqlite: 'inaccessible', uptime, memoryMB });
+    }
+
+    res.json({ status: 'ok', uptime, redis: 'connected', sqlite: 'accessible', memoryMB });
 });
 
 // Rotas

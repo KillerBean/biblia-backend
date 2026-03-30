@@ -33,8 +33,39 @@
 | # | Problema | Local | Status |
 |---|----------|-------|--------|
 | B1 | `console.log` em código de produção | `src/services/redis-service.ts` | ✅ Corrigido |
-| B2 | Sem `package-lock.json` | `/` | Pendente |
-| B3 | Versões de pacotes com `^` — permite atualizações automáticas | `package.json` | Pendente |
+| B2 | Sem `package-lock.json` | `/` | ✅ Corrigido |
+| B3 | Versões de pacotes com `^` — permite atualizações automáticas | `package.json` | ✅ Corrigido |
+
+## Revisão 2026-03-30 (Fase 2)
+
+Findings adicionais identificados na revisão de código de 2026-03-21:
+
+### Crítico / Alto — Corrigidos
+
+| # | Problema | Local | Status |
+|---|----------|-------|--------|
+| N1 | Conteúdo de busca armazenado no Redis (PII implícito) | `src/middlewares/cache.ts` | ✅ Corrigido — chave usa SHA-256 do originalUrl |
+| N2 | Cache key injection / pollution via `req.originalUrl` | `src/middlewares/cache.ts` | ✅ Corrigido — SHA-256 elimina chars especiais |
+| N3 | Graceful shutdown sem timeout para in-flight requests | `src/index.ts` | ✅ Corrigido — timeout 30s + SIGINT handler |
+| N4 | Error handler sem `requestId` na resposta | `src/index.ts` | ✅ Corrigido |
+| N5 | Input validation incompleta (sem upper bounds) | `src/router.ts` | ✅ Corrigido — bookId≤66, chapterId≤150, start/end≤176, name≤100 |
+| N6 | CI configurado para branch `main` (branch é `master`) | `.github/workflows/ci.yml` | ✅ Corrigido |
+| N7 | CI usava `npm install` em vez de `npm ci` | `.github/workflows/ci.yml` | ✅ Corrigido |
+| N8 | GitHub Actions sem SHA pins (supply chain) | `.github/workflows/ci.yml` | ✅ Corrigido |
+| N9 | CI sem type check, npm audit e scan de imagem | `.github/workflows/ci.yml` | ✅ Corrigido — tsc, npm audit, Trivy |
+| N10 | Sem scan de secrets no CI | `.github/workflows/secret-scan.yml` | ✅ Corrigido — TruffleHog |
+| N11 | `unhandledRejection` / `uncaughtException` não tratados | `src/index.ts` | ✅ Corrigido |
+| N12 | REDIS_PASSWORD não validado no startup em produção | `src/index.ts` | ✅ Corrigido |
+
+### Pendente
+
+| # | Problema | Prioridade |
+|---|----------|-----------|
+| P1 | HTTPS/TLS no VPS | Crítico — depende de infra |
+| P2 | SQLite hardcoded como ARC — multi-versão não roteada | Médio |
+| P3 | Sem timeout em queries SQLite (busy_timeout) | Médio |
+| P4 | Redis sem `connectTimeout` | Médio |
+| P5 | Cobertura de testes < 80% (middlewares/controllers) | Médio |
 
 ## Notas
 - `.env` está no `.gitignore` e nunca foi commitado — não há exposição de credenciais no histórico git.

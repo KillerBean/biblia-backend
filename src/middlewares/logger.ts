@@ -6,6 +6,7 @@ export const loggerMiddleware = (req: Request, res: Response, next: NextFunction
     const startMs = Date.now();
 
     res.locals.requestId = requestId;
+    res.setHeader('X-Request-ID', requestId);
 
     res.on('finish', () => {
         const log = {

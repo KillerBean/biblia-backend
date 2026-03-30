@@ -8,7 +8,36 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/) e este p
 
 ---
 
-## [Current] - 2026-03-21
+## [v0.4.0] - 2026-03-30
+
+### Added
+- **Health check endpoint** (`GET /health`): Verifica conectividade SQLite + campo `memoryMB`
+- **X-Request-ID header**: Incluído em todas as respostas (rastreamento de requests)
+- **Trivy image scan**: Adicionado ao CI para varredura de vulnerabilidades CRITICAL/HIGH
+- **TruffleHog secret scanning**: Detecta secrets em push/PR
+- **IController.ping()**: Método exposto para verificação de conectividade DB
+
+### Changed
+- **Image tag strategy**: Push de `:latest` + SHA tag no deploy (manter 3 versões no GHCR)
+- **CI/CD workflow**: Reordenação de steps, correção de TruffleHog base/head para push/PR
+- **deploy.sh**: Path corrections e remoção de duplicate :latest push
+- **Documentation**: Move SECURITY_AUDIT.md, TODO.md, NEXT-STEPS para docs/
+
+### Fixed
+- **Cache poisoning**: Corrigido uso de `req.originalUrl` → `req.path` no cache middleware
+- **TypeScript errors**: Correções no CI para type checking
+- **CI/CD paths**: deploy.sh references corretas
+- **Healthcheck**: Pin de image tags em docker-compose
+
+### Security
+- Image tag pinning em docker-compose (evita `:latest` em prod)
+- TruffleHog integration para secret scanning
+- Health check com SQLite validation
+- SECURITY_AUDIT.md atualizado: fase 1+2 completas, tabela N1–N12
+
+---
+
+## [v0.3.0] - 2026-03-21
 
 ### Added
 - **docker-compose.prod.yml**: Nova configuração para produção com limits (128m RAM app, 80m Redis, 32m Nginx)

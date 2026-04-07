@@ -23,6 +23,7 @@
 .env.production.local
 
 *-output.json
+NEXT-STEPS*.md
 
 npm-debug.log*
 yarn-debug.log*

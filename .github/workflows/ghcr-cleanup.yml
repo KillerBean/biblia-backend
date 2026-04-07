@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Limpar versões antigas do GHCR (manter 3)
-        uses: actions/delete-package-versions@v5
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5
         with:
           package-name: biblia-backend
           package-type: container

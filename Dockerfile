@@ -24,6 +24,9 @@ RUN npx tsx scripts/init-db.ts
 # Stage 2: Production Runner
 FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS runner
 
+# Upgrade zlib to patch CVE-2026-22184 (HIGH) until base image is updated
+RUN apk upgrade --no-cache zlib
+
 WORKDIR /app
 
 # Set environment variables

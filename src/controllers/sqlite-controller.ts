@@ -84,6 +84,10 @@ class SqliteController implements IController{
         return verses
     }
 
+    async ping() {
+        await this.dbController?.ping();
+    }
+
     async search(query: string) {
         if (!this.dbController) return [];
         

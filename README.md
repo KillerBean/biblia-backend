@@ -35,6 +35,7 @@ Client → Nginx → biblia-app → Redis → SQLite
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/` | API info |
+| GET | `/health` | Health check (SQLite + memory status) |
 | GET | `/versions` | List available translations |
 | GET | `/books` | List books (`?name=` filter) |
 | GET | `/books/:bookId` | Book by ID |

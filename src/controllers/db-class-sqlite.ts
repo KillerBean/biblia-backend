@@ -7,6 +7,10 @@ export default class DBClassSqlite {
         this.db = db;
     }
 
+    async ping(): Promise<void> {
+        await this.db.get('SELECT 1');
+    }
+
     async getBookByID(bookId: number): Promise<any> {
         const sql = 'SELECT * FROM book WHERE id = ?';
         const row = await this.db.get(sql, [bookId]);

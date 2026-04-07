@@ -7,4 +7,5 @@ export default interface IController{
     getBooks(search?: string):Promise<any>;
     getChapterCount(bookID: number): Promise<number[]>;
     search(query: string): Promise<any[]>;
+    ping(): Promise<void>;
 }

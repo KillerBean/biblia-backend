@@ -1,5 +1,5 @@
 # Stage 1: Dependencies and Build
-FROM node:24-alpine AS builder
+FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS builder
 
 WORKDIR /app
 
@@ -22,7 +22,17 @@ RUN npx tsx src/swagger.ts
 RUN npx tsx scripts/init-db.ts
 
 # Stage 2: Production Runner
-FROM node:24-alpine AS runner
+FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS runner
+
+# Upgrade zlib to patch CVE-2026-22184 (HIGH) until base image is updated
+RUN apk upgrade --no-cache zlib
+
+# Upgrade npm to patch CVE-2026-27903/27904 (minimatch), CVE-2026-29786/31802 (tar)
+# Then patch CVE-2026-33671 (picomatch 4.0.3→4.0.4) inside npm's bundled tinyglobby,
+# which npm 11.12.1 still bundles with picomatch 4.0.3
+RUN npm install -g npm@11.12.1 \
+ && cd /usr/local/lib/node_modules/npm/node_modules/tinyglobby \
+ && npm install --no-save picomatch@4.0.4
 
 WORKDIR /app
 

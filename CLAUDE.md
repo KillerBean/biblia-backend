@@ -71,7 +71,7 @@ Testes rodam no `docker build` (CI) — o Dockerfile executa `npm test` na stage
 
 ## Security
 
-Ver [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) para o audit completo.
+Ver [SECURITY_AUDIT.md](./docs/SECURITY_AUDIT.md) para o audit completo.
 
 Medidas em vigor:
 - Rate limiting: 100 req/15min global, 20 req/15min em `/search`

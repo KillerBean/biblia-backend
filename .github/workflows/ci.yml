@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        lfs: true
 
     - name: Use Node.js
       uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.2.0
@@ -33,3 +35,15 @@ jobs:
 
     - name: Security audit
       run: npm audit --audit-level=high
+
+    - name: Build Docker image
+      run: docker build -t biblia-backend:ci .
+
+    - name: Trivy — scan Docker image
+      uses: aquasecurity/trivy-action@6e7b7d1fd3e4fef0c5fa8cce1229c54b2c9bd0d8 # v0.30.0
+      with:
+        image-ref: biblia-backend:ci
+        format: table
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: CRITICAL,HIGH

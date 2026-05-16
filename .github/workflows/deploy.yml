@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [main, prod]
+    branches: [master, prod]
 
 jobs:
   test:
@@ -58,7 +58,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/killerbean/biblia-backend:${{ github.sha }}
-            ghcr.io/killerbean/biblia-backend:latest
           cache-from: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/killerbean/biblia-backend:buildcache,mode=max
 

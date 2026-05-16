@@ -24,8 +24,9 @@ RUN npx tsx scripts/init-db.ts
 # Stage 2: Production Runner
 FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS runner
 
-# Upgrade zlib to patch CVE-2026-22184 (HIGH) until base image is updated
-RUN apk upgrade --no-cache zlib
+# Upgrade all Alpine packages to patch OS-level CVEs until base image is updated
+# (zlib CVE-2026-22184, openssl CVE-2026-31789/28387-90, musl CVE-2026-40200)
+RUN apk upgrade --no-cache
 
 # Upgrade npm to patch CVE-2026-27903/27904 (minimatch), CVE-2026-29786/31802 (tar)
 # Then patch CVE-2026-33671 (picomatch 4.0.3→4.0.4) inside npm's bundled tinyglobby,

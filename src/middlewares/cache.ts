@@ -1,9 +1,18 @@
 import { createHash } from 'node:crypto';
 import { Request, Response, NextFunction } from 'express';
-import redisClient from '../services/redis-service.ts';
 
 // Duração padrão do cache: 1 hora (3600 segundos)
 const DEFAULT_CACHE_TTL = 3600;
+
+export interface CacheClient {
+    get(key: string): Promise<string | null>;
+    set(key: string, value: string, mode: 'EX', duration: number): Promise<unknown>;
+}
+
+const noOpCacheClient: CacheClient = {
+    get: async () => null,
+    set: async () => 'OK',
+};
 
 function buildCacheKey(req: Request): string {
     // Hash SHA-256 da URL em todas as rotas:
@@ -13,7 +22,10 @@ function buildCacheKey(req: Request): string {
     return `cache:${req.path}:${hash}`;
 }
 
-export const cacheMiddleware = (duration: number = DEFAULT_CACHE_TTL) => {
+export const cacheMiddleware = (
+    duration: number = DEFAULT_CACHE_TTL,
+    client: CacheClient = noOpCacheClient,
+) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         // Apenas cacheamos requisições GET
         if (req.method !== 'GET') {
@@ -23,7 +35,7 @@ export const cacheMiddleware = (duration: number = DEFAULT_CACHE_TTL) => {
         const key = buildCacheKey(req);
 
         try {
-            const cachedResponse = await redisClient.get(key);
+            const cachedResponse = await client.get(key);
 
             if (cachedResponse) {
                 // Header indicando que veio do cache
@@ -49,7 +61,7 @@ export const cacheMiddleware = (duration: number = DEFAULT_CACHE_TTL) => {
                     const value = typeof body === 'string' ? body : JSON.stringify(body);
                     
                     // Salva assincronamente (sem await para não bloquear a resposta)
-                    redisClient.set(key, value, 'EX', duration).catch((err: any) => 
+                    client.set(key, value, 'EX', duration).catch((err: any) =>
                         console.error('Erro ao salvar no cache:', err)
                     );
                 }

@@ -12,8 +12,11 @@ RUN npm ci
 # Copy source code and scripts
 COPY . .
 
-# Run tests
+# Reproducible quality gates. Database initialization remains a separate step.
+RUN npm run lint
+RUN npm run typecheck
 RUN npm test
+RUN npm run verify:assets
 
 # Gera documentação Swagger
 RUN npx tsx src/swagger.ts

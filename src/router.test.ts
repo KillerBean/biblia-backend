@@ -75,6 +75,11 @@ describe('API Endpoints', () => {
     expect(res.statusCode).toEqual(400);
   });
 
+  it('GET /books/:bookId rejects partially numeric IDs', async () => {
+    const res = await request(app).get('/books/1abc');
+    expect(res.statusCode).toEqual(400);
+  });
+
   // --- Chapter Count Tests ---
 
   it('GET /books/:bookId/chapters should return list of chapters', async () => {
@@ -141,6 +146,11 @@ describe('API Endpoints', () => {
     const res = await request(app).get('/verses/invalid/invalid');
     expect(res.statusCode).toEqual(400);
   });
+
+  it('GET /verses rejects an inverted range', async () => {
+    const res = await request(app).get('/verses/1/1?start=10&end=5');
+    expect(res.statusCode).toEqual(400);
+  });
   
   it('GET /verses/... should return verses with book object', async () => {
     const res = await request(app).get('/verses/1/1');
@@ -168,6 +178,11 @@ describe('API Endpoints', () => {
 
   it('GET /search should return 400 if query is missing', async () => {
     const res = await request(app).get('/search');
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it('GET /books rejects repeated name query parameters', async () => {
+    const res = await request(app).get('/books?name=one&name=two');
     expect(res.statusCode).toEqual(400);
   });
 });

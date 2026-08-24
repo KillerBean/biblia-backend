@@ -8,16 +8,21 @@
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/index.ts\"",
     "start": "tsx ./src/index.ts",
     "swagger": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/swagger.ts\"",
+    "swagger:generate": "tsx ./src/swagger.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "verify:assets": "tsx ./scripts/verify-assets.ts",
+    "build": "npm run lint && npm run typecheck && npm run swagger:generate && npm run verify:assets",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "1.20.4",
+    "body-parser": "1.20.6",
     "cors": "2.8.6",
     "dotenv": "16.6.1",
-    "express": "4.22.1",
-    "express-rate-limit": "8.3.1",
+    "express": "4.22.2",
+    "express-rate-limit": "8.6.2",
     "helmet": "8.1.0",
     "ioredis": "5.10.0",
     "serve-favicon": "2.5.1",
@@ -26,6 +31,7 @@
     "swagger-ui-express": "5.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
@@ -33,6 +39,7 @@
     "@types/serve-favicon": "2.5.7",
     "@types/supertest": "7.2.0",
     "@types/swagger-ui-express": "4.1.8",
+    "eslint": "10.9.0",
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
     "nodemon": "3.1.14",
@@ -40,13 +47,17 @@
     "swagger-autogen": "2.23.7",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
-    "tsx": "4.21.0",
-    "typescript": "5.9.3"
+    "tsx": "4.23.12",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.67.0"
   },
   "overrides": {
     "minimatch@10": "10.2.5",
     "picomatch@4": "4.0.4",
-    "tar@7": "7.5.13"
+    "tar": "7.5.22",
+    "minimatch@9": {
+      "brace-expansion": "2.1.4"
+    }
   },
   "nodemonConfig": {
     "ignore": [

@@ -81,7 +81,8 @@ Medidas em vigor:
 - Validação de input em todos os query params
 - CORS restrito por `CORS_ORIGINS` (não `*` em produção)
 
-Pending do audit: fixar versões de pacotes (remover `^`) e commitar `package-lock.json`.
+Pending do audit: HTTPS/TLS e seleção explícita de tradução; dependências e
+`package-lock.json` são gates do CI.
 
 ## Structured Logging
 

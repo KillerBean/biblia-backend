@@ -12,6 +12,7 @@ const redisClient = new Redis({
     host: REDIS_HOST,
     port: REDIS_PORT,
     password: REDIS_PASSWORD,
+    connectTimeout: 5_000,
     maxRetriesPerRequest: 3,
     retryStrategy(times: number) {
         const delay = Math.min(times * 50, 2000);

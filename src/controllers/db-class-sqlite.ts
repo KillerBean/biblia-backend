@@ -19,7 +19,7 @@ export default class DBClassSqlite {
 
     async getBooks(search?: string){
         let sql = 'SELECT * FROM book';
-        let params: string[] = [];
+        const params: string[] = [];
         if (search) {
             sql += ' WHERE name LIKE ?';
             params.push(`%${search}%`);
@@ -52,8 +52,8 @@ export default class DBClassSqlite {
             FROM verse v
             JOIN book b ON v.book_id = b.id
         `;
-        let params: number[] = []
-        let conditions: string[] = []
+        const params: number[] = []
+        const conditions: string[] = []
 
         if(bookId){
             conditions.push('v.book_id = ?');

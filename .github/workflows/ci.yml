@@ -24,11 +24,14 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Generate swagger
-      run: npx tsx src/swagger.ts
+    - name: Lint
+      run: npm run lint
 
     - name: Type check
-      run: npx tsc --noEmit
+      run: npm run typecheck
+
+    - name: Generate Swagger and build checks
+      run: npm run build
 
     - name: Run tests
       run: npm test

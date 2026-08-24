@@ -53,7 +53,7 @@ Client → Nginx → biblia-app → Redis → SQLite
 | `HTTP_PORT` | `3333` | Server port |
 | `NODE_ENV` | — | `development` or `production` |
 | `HOSTNAME` | auto-detected IP | Base URL for CORS |
-| `CORS_ORIGINS` | `HOSTNAME:PORT` | Comma-separated allowed origins |
+| `CORS_ORIGINS` | — | Comma-separated absolute HTTP(S) origins; required in production |
 | `REDIS_HOST` | `localhost` | Redis host |
 | `REDIS_PORT` | `6379` | Redis port |
 | `REDIS_PASSWORD` | — | Redis authentication password (required in production) |
@@ -65,6 +65,9 @@ npm install
 npm run dev        # Hot reload via nodemon
 npm test           # Run Jest tests
 npm run swagger    # Regenerate Swagger docs
+npm run lint       # ESLint
+npm run typecheck  # TypeScript sem emitir arquivos
+npm run build      # Gates locais + Swagger + integridade dos dados
 ```
 
 Copy `.env.dev.example` to `.env` and adjust values before running.

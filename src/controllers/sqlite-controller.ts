@@ -28,6 +28,7 @@ class SqliteController implements IController{
         await db.run('PRAGMA cache_size=-65536');  // 64MB in-memory page cache
         await db.run('PRAGMA temp_store=MEMORY');  // temp tables em RAM
         await db.run('PRAGMA synchronous=NORMAL'); // safe com WAL, mais rápido que FULL
+        await db.run('PRAGMA busy_timeout=5000'); // não bloquear indefinidamente em lock transitório
 
         this.dbController = new DBClassSqlite(db)
     }
@@ -44,8 +45,8 @@ class SqliteController implements IController{
     // TODO: create a method to get the list of versions from postgres
     async getVersionList(){
         // list files in the directory and return the list
-        let dbFiles: string[] = []
-        let dbFolder = join(PathUtils.__dirname, '../db/sqlite')
+        const dbFiles: string[] = []
+        const dbFolder = join(PathUtils.__dirname, '../db/sqlite')
         
         try {
             const files = await readdir(dbFolder, { withFileTypes: false });
@@ -60,7 +61,7 @@ class SqliteController implements IController{
     }
 
     async getBookByID(bookID:number){
-        let book = await this.dbController?.getBookByID(bookID)
+        const book = await this.dbController?.getBookByID(bookID)
         if (!book || (Array.isArray(book) && book.length === 0)) return null;
         return book
     }

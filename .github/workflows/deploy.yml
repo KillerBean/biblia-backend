@@ -84,5 +84,8 @@ jobs:
           work=$(mktemp -d)
           trap 'rm -rf -- "$work"' EXIT
           jq -n --arg service "$DEPLOY_SERVICE" --arg image_repository "$IMAGE_REPOSITORY" --arg image_digest "$IMAGE_DIGEST" --arg source_repository "$GITHUB_REPOSITORY" --arg commit_sha "$GITHUB_SHA" --arg issued_at "$(date --utc --iso-8601=seconds)" --argjson sequence "$GITHUB_RUN_NUMBER" '{schema_version:1,sequence:$sequence,service:$service,image_repository:$image_repository,image_digest:$image_digest,source_repository:$source_repository,commit_sha:$commit_sha,issued_at:$issued_at}' >"$work/deploy-manifest.json"
-          descriptor=$(oras push "$IMAGE_REPOSITORY:deploy-production" --artifact-type application/vnd.roseno.deploy.v1+json "$work/deploy-manifest.json:application/vnd.roseno.deploy-manifest.v1+json" --format json | jq -er '.digest')
+          descriptor=$(
+            cd "$work"
+            oras push "$IMAGE_REPOSITORY:deploy-production" --artifact-type application/vnd.roseno.deploy.v1+json "deploy-manifest.json:application/vnd.roseno.deploy-manifest.v1+json" --format json | jq -er '.digest'
+          )
           cosign sign --yes "$IMAGE_REPOSITORY@$descriptor"

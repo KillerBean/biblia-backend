@@ -5,6 +5,9 @@ on:
 
 jobs:
   cleanup:
+    # Disabled: one signed deployment creates several related OCI versions.
+    # Count-based deletion can remove the live image while retaining its signature.
+    if: ${{ false }}
     name: Delete old container versions
     runs-on: ubuntu-latest
     permissions:

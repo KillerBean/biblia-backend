@@ -10,9 +10,9 @@
     "swagger": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/swagger.ts\"",
     "swagger:generate": "tsx ./src/swagger.ts",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "npm run swagger:generate && tsc --noEmit",
     "verify:assets": "tsx ./scripts/verify-assets.ts",
-    "build": "npm run lint && npm run typecheck && npm run swagger:generate && npm run verify:assets",
+    "build": "npm run lint && npm run typecheck && npm run verify:assets",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "",

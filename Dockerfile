@@ -31,12 +31,9 @@ FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a
 # (zlib CVE-2026-22184, openssl CVE-2026-31789/28387-90, musl CVE-2026-40200)
 RUN apk upgrade --no-cache
 
-# Upgrade npm to patch CVE-2026-27903/27904 (minimatch), CVE-2026-29786/31802 (tar)
-# Then patch CVE-2026-33671 (picomatch 4.0.3→4.0.4) inside npm's bundled tinyglobby,
-# which npm 11.12.1 still bundles with picomatch 4.0.3
-RUN npm install -g npm@11.12.1 \
- && cd /usr/local/lib/node_modules/npm/node_modules/tinyglobby \
- && npm install --no-save picomatch@4.0.4
+# Keep the runtime CLI on a patched release. npm 11.19.1 includes fixed
+# tar, pacote, brace-expansion, ip-address and sigstore dependencies.
+RUN npm install -g npm@11.19.1
 
 WORKDIR /app
 

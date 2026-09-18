@@ -29,3 +29,13 @@
 ## Próximos passos
 
 Ver [NEXT-STEPS-2026-03-21.md](./NEXT-STEPS-2026-03-21.md) para planejamento de futuras fases.
+
+### Backlog operacional — 2026-09-10
+
+- [ ] **Não cachear `GET /health` no Nginx** — a verificação pós-deploy
+  recebeu `X-Nginx-Cache: HIT` e manteve `uptime` obsoleto por até 1 hora.
+  Ajustar `nginx.conf` e a configuração implantada em
+  `/opt/projects/production/biblia-back.nginx.conf`, preservando o cache das
+  rotas de conteúdo. Critérios de aceite: `nginx -t` aprovado, `/health` sempre
+  consultado no upstream, `uptime` crescente em chamadas consecutivas e
+  healthcheck interno do container permanecendo saudável.

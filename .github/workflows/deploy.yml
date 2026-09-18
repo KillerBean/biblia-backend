@@ -61,7 +61,7 @@ jobs:
     if: github.ref == 'refs/heads/prod'
     environment:
       name: production
-      url: https://api.biblia.roseno.dev
+      url: https://api-biblia.roseno.dev
     concurrency:
       group: deploy-prod
       cancel-in-progress: false

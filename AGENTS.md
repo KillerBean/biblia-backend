@@ -21,7 +21,12 @@ npx tsc --noEmit     # Type check only (no emit)
 1. `npm ci` → 2. `npx tsx src/swagger.ts` → 3. `npx tsc --noEmit` → 4. `npm test` → 5. `npm audit --audit-level=high` → 6. Docker build + Trivy scan
 
 ## Deploy
-Push to `prod` branch → tests → Docker build → GHCR push (`ghcr.io/killerbean/biblia-backend:<sha>`) → SSH to VPS → `deploy.sh`. Never use `:latest` in production.
+Open a pull request from `master` to `prod` and require `Production gates`.
+After merge, GitHub Actions builds and signs
+`ghcr.io/killerbean/biblia-backend:<sha>` and publishes the signed OCI
+promotion for service `biblia-app`. It does not SSH to the VPS. Application is
+separate and deliberate through `sudo vps-deploy biblia-app` on `linode_1`.
+Never push directly to `prod` or use `:latest`.
 
 ## Architecture
 ```

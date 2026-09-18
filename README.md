@@ -74,20 +74,22 @@ Copy `.env.dev.example` to `.env` and adjust values before running.
 
 ## Deploy
 
-The CI/CD pipeline (`.github/workflows/deploy.yml`) runs on pushes to the `prod` branch:
+Open a reviewed PR from `master` to `prod`; never push directly to `prod`.
+After merge, the CI/CD pipeline (`.github/workflows/deploy.yml`) runs:
 
 1. Runs tests
 2. Generates Swagger docs (`npm run swagger`)
 3. Builds and pushes Docker image to GHCR
-4. SSHs into VPS and runs `deploy.sh`
+4. Signs the immutable image and publishes a signed deployment manifest
+5. The VPS puller verifies the manifest and applies `biblia-app`
 
 **Compose files:**
 - `docker-compose.yaml` — Development (no resource limits)
 - `docker-compose.prod.yml` — Production (CPU/memory limits per container)
 
 ```bash
-# Manual deploy on VPS
-./deploy.sh
+# Approved manual application on the VPS (after signed-manifest verification)
+sudo vps-deploy biblia-app
 
 # Local Docker (development)
 ./launch.sh -a   # Full redeploy (down + up)

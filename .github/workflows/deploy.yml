@@ -3,11 +3,16 @@ name: CI/CD
 on:
   push:
     branches: [master, prod]
+  pull_request:
+    branches: [prod]
 
 jobs:
   test:
-    name: Tests
+    name: Production gates
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     concurrency:
       group: cicd-test-${{ github.ref }}
       cancel-in-progress: true
@@ -16,6 +21,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           lfs: true
+          fetch-depth: 0
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -35,16 +41,27 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --coverage
 
       - name: Dependency audit
         run: npm audit --audit-level=high
+
+      - name: Secret scan
+        uses: trufflesecurity/trufflehog@bff3d2670b362bbb4a0bcdeffea146cbc2ad3abd
+        with:
+          base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          extra_args: --only-verified
 
   deploy:
     name: Build & Deploy
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: github.ref == 'refs/heads/prod'
+    environment:
+      name: production
+      url: https://api-biblia.roseno.dev
     concurrency:
       group: deploy-prod
       cancel-in-progress: false

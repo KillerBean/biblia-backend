@@ -15,29 +15,34 @@ jobs:
       with:
         lfs: true
 
+    - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      with:
+        version: 10.34.5
+        run_install: false
+
     - name: Use Node.js
       uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.2.0
       with:
         node-version: '24'
-        cache: 'npm'
+        cache: 'pnpm'
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Lint
-      run: npm run lint
+      run: pnpm run lint
 
     - name: Type check
-      run: npm run typecheck
+      run: pnpm run typecheck
 
     - name: Generate Swagger and build checks
-      run: npm run build
+      run: pnpm run build
 
     - name: Run tests
-      run: npm test
+      run: pnpm test
 
     - name: Security audit
-      run: npm audit --audit-level=high
+      run: pnpm audit
 
     - name: Build Docker image
       run: docker build -t biblia-backend:ci .

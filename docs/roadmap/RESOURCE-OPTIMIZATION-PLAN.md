@@ -60,8 +60,8 @@ hit/miss, uso do Redis e latência das consultas SQLite.
 
 ## Gates e metas
 
-Cada etapa deve passar por `npm run lint`, `npm run typecheck`, `npm test`,
-`npm run verify:assets`, build/scan da imagem e teste de carga reproduzível.
+Cada etapa deve passar por `pnpm run lint`, `pnpm run typecheck`, `pnpm test`,
+`pnpm run verify:assets`, build/scan da imagem e teste de carga reproduzível.
 Validar todas as traduções, parser de referências, busca, cache miss/hit,
 indisponibilidade do Redis, shutdown e health check.
 

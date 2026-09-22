@@ -1,6 +1,7 @@
 {
   "name": "biblia_backend",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.34.5",
   "description": "",
   "type": "module",
   "main": "./src/index.ts",
@@ -10,9 +11,9 @@
     "swagger": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"tsx ./src/swagger.ts\"",
     "swagger:generate": "tsx ./src/swagger.ts",
     "lint": "eslint .",
-    "typecheck": "npm run swagger:generate && tsc --noEmit",
+    "typecheck": "pnpm run swagger:generate && tsc --noEmit",
     "verify:assets": "tsx ./scripts/verify-assets.ts",
-    "build": "npm run lint && npm run typecheck && npm run verify:assets",
+    "build": "pnpm run lint && pnpm run typecheck && pnpm run verify:assets",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "",
@@ -28,10 +29,13 @@
     "serve-favicon": "2.5.1",
     "sqlite": "5.1.1",
     "sqlite3": "6.0.1",
-    "swagger-ui-express": "5.0.1"
+    "swagger-ui-express": "5.0.1",
+    "tsx": "4.23.15"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@jest/globals": "30.3.0",
+    "@types/body-parser": "1.19.6",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
@@ -47,17 +51,24 @@
     "swagger-autogen": "2.23.7",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
-    "tsx": "4.23.12",
     "typescript": "5.9.3",
     "typescript-eslint": "8.67.0"
   },
-  "overrides": {
-    "minimatch@10": "10.2.5",
-    "picomatch@4": "4.0.4",
-    "qs": "6.16.0",
-    "tar": "7.5.22",
-    "minimatch@9": {
-      "brace-expansion": "2.1.4"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sqlite3",
+      "unrs-resolver"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf"
+    ],
+    "overrides": {
+      "minimatch@10": "10.2.5",
+      "picomatch@4": "4.0.4",
+      "qs": "6.16.0",
+      "tar": "7.5.22",
+      "minimatch@9>brace-expansion": "2.1.4"
     }
   },
   "nodemonConfig": {

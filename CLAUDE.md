@@ -9,10 +9,10 @@ Bible Backend API - A REST API serving Bible text in Portuguese with multiple tr
 ## Common Commands
 
 ```bash
-npm run dev          # Development server with hot reload
-npm test             # Run Jest tests
-npm run swagger      # Regenerate Swagger documentation
-npm start            # Production start (no hot reload)
+pnpm run dev          # Development server with hot reload
+pnpm test             # Run Jest tests
+pnpm run swagger      # Regenerate Swagger documentation
+pnpm start           # Production start (no hot reload)
 ```
 
 **Docker deployment:**
@@ -67,7 +67,7 @@ Copie `.env.dev.example` para `.env` antes de rodar localmente.
 | **Unit — utils** | Bible parser, book mappings, lógica pura | ❌ | Jest |
 | **Integration** | Rotas HTTP end-to-end (SQLite real + Redis mockado) | Redis apenas | Jest + supertest |
 
-Testes rodam no `docker build` (CI) — o Dockerfile executa `npm test` na stage builder.
+Testes rodam no `docker build` (CI) — o Dockerfile executa `pnpm test` na stage builder.
 
 ## Security
 

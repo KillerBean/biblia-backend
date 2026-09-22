@@ -61,13 +61,13 @@ Client → Nginx → biblia-app → Redis → SQLite
 ## Development
 
 ```bash
-npm install
-npm run dev        # Hot reload via nodemon
-npm test           # Run Jest tests
-npm run swagger    # Regenerate Swagger docs
-npm run lint       # ESLint
-npm run typecheck  # TypeScript sem emitir arquivos
-npm run build      # Gates locais + Swagger + integridade dos dados
+pnpm install
+pnpm run dev        # Hot reload via nodemon
+pnpm test           # Run Jest tests
+pnpm run swagger    # Regenerate Swagger docs
+pnpm run lint       # ESLint
+pnpm run typecheck  # TypeScript sem emitir arquivos
+pnpm run build      # Gates locais + Swagger + integridade dos dados
 ```
 
 Copy `.env.dev.example` to `.env` and adjust values before running.
@@ -78,7 +78,7 @@ Open a reviewed PR from `master` to `prod`; never push directly to `prod`.
 After merge, the CI/CD pipeline (`.github/workflows/deploy.yml`) runs:
 
 1. Runs tests
-2. Generates Swagger docs (`npm run swagger`)
+2. Generates Swagger docs (`pnpm run swagger`)
 3. Builds and pushes Docker image to GHCR
 4. Signs the immutable image and publishes a signed deployment manifest
 5. The VPS puller verifies the manifest and applies `biblia-app`

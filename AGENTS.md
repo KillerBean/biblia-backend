@@ -3,11 +3,11 @@
 ## Commands
 
 ```bash
-npm run dev          # Dev server (nodemon + tsx, 2.5s delay)
-npm test             # Jest (ESM mode, requires NODE_OPTIONS=--experimental-vm-modules)
-npm run swagger      # Regenerate Swagger docs (writes swagger-output.json)
-npm start            # Production (tsx, no hot reload)
-npx tsc --noEmit     # Type check only (no emit)
+pnpm run dev          # Dev server (nodemon + tsx, 2.5s delay)
+pnpm test             # Jest (ESM mode, requires NODE_OPTIONS=--experimental-vm-modules)
+pnpm run swagger      # Regenerate Swagger docs (writes swagger-output.json)
+pnpm start           # Production (tsx, no hot reload)
+pnpm exec tsc --noEmit     # Type check only (no emit)
 ```
 
 **Docker:**
@@ -18,7 +18,7 @@ npx tsc --noEmit     # Type check only (no emit)
 ```
 
 ## CI Pipeline Order (push to master)
-1. `npm ci` → 2. `npx tsx src/swagger.ts` → 3. `npx tsc --noEmit` → 4. `npm test` → 5. `npm audit --audit-level=high` → 6. Docker build + Trivy scan
+1. `pnpm install --frozen-lockfile` → 2. `pnpm exec tsx src/swagger.ts` → 3. `pnpm exec tsc --noEmit` → 4. `pnpm test` → 5. `pnpm audit --audit-level=high` → 6. Docker build + Trivy scan
 
 ## Deploy
 Open a pull request from `master` to `prod` and require `Production gates`.
@@ -47,7 +47,7 @@ Single instance is sufficient — API is read-only and stateless. SQLite DBs liv
 ## Testing
 
 ```bash
-npm test             # Runs all tests
+pnpm test             # Runs all tests
 ```
 
 - **Unit:** `src/utils/bible-parser.test.ts` — pure logic, no mocks

@@ -1,7 +1,7 @@
 {
   "name": "biblia_backend",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@10.34.5",
   "description": "",
   "type": "module",
   "main": "./src/index.ts",
@@ -29,7 +29,8 @@
     "serve-favicon": "2.5.1",
     "sqlite": "5.1.1",
     "sqlite3": "6.0.1",
-    "swagger-ui-express": "5.0.1"
+    "swagger-ui-express": "5.0.1",
+    "tsx": "4.23.15"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -50,7 +51,6 @@
     "swagger-autogen": "2.23.7",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
-    "tsx": "4.23.12",
     "typescript": "5.9.3",
     "typescript-eslint": "8.67.0"
   },

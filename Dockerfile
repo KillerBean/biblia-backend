@@ -2,7 +2,7 @@
 FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS builder
 
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
+RUN corepack enable && corepack prepare pnpm@10.34.5 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
@@ -25,6 +25,9 @@ RUN pnpm exec tsx src/swagger.ts
 # OTIMIZAÇÃO: Cria os índices nos bancos SQLite durante o build
 RUN pnpm exec tsx scripts/init-db.ts
 
+# Keep only runtime dependencies in the final image.
+RUN pnpm prune --prod
+
 # Stage 2: Production Runner
 FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS runner
 
@@ -33,7 +36,6 @@ FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a
 RUN apk upgrade --no-cache
 
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -56,4 +58,4 @@ COPY --from=builder --chown=node:node /app/tsconfig.json ./
 EXPOSE 3333
 
 # Start the application
-CMD ["pnpm", "exec", "tsx", "src/index.ts"]
+CMD ["node", "--import", "tsx", "src/index.ts"]

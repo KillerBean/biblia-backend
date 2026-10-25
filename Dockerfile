@@ -17,6 +17,7 @@ RUN npm run lint
 RUN npm run typecheck
 RUN npm test
 RUN npm run verify:assets
+RUN npm run verify:translations
 
 # Gera documentação Swagger
 RUN npx tsx src/swagger.ts
@@ -42,7 +43,8 @@ ENV NODE_ENV=production
 ENV HOSTNAME=http://localhost
 ENV HTTP_PORT=3333
 
-# Create a non-root user
+# Create the private runtime artifact directory before dropping privileges.
+RUN mkdir -p /data/bibles && chown node:node /data/bibles
 USER node
 
 # Copy dependencies
@@ -51,6 +53,8 @@ COPY --from=builder --chown=node:node /app/package*.json ./
 
 # Copy source code, assets and the already OPTIMIZED databases
 COPY --from=builder --chown=node:node /app/src ./src
+COPY --from=builder --chown=node:node /app/scripts ./scripts
+COPY --from=builder --chown=node:node /app/config ./config
 COPY --from=builder --chown=node:node /app/images ./images
 COPY --from=builder --chown=node:node /app/tsconfig.json ./
 
@@ -58,4 +62,4 @@ COPY --from=builder --chown=node:node /app/tsconfig.json ./
 EXPOSE 3333
 
 # Start the application
-CMD ["npx", "tsx", "src/index.ts"]
+CMD ["npx", "tsx", "scripts/start-production.ts"]

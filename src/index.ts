@@ -10,6 +10,18 @@ if (process.env.NODE_ENV === 'production' && !process.env.REDIS_PASSWORD) {
     console.error('FATAL: REDIS_PASSWORD required in production');
     process.exit(1);
 }
+if (process.env.NODE_ENV === 'production' && !process.env.APP_SERVICE_TOKEN) {
+    console.error('FATAL: APP_SERVICE_TOKEN required in production');
+    process.exit(1);
+}
+if (
+    process.env.NODE_ENV === 'production' &&
+    !process.env.PUBLIC_API_CONSUMERS_JSON &&
+    !process.env.PUBLIC_API_KEY_HASHES
+) {
+    console.error('FATAL: public API consumer keys required in production');
+    process.exit(1);
+}
 
 const port = Number(process.env.HTTP_PORT || 3333);
 const hostname = process.env.HOSTNAME || ("http://" + getIPAddress());

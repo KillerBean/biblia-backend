@@ -19,16 +19,15 @@ Client → Nginx → biblia-app → Redis → SQLite
 
 > Uma única instância é suficiente: a API é read-only, stateless, e Redis cacheia por 1h. Se cair, Docker reinicia em segundos (~80-100 MB RAM). Para escalar, adicione `biblia-app-02` ao compose e upstream nginx.
 
-## Translations
+## Traduções e licenças
 
-| ID   | Name                               |
-|------|------------------------------------|
-| ARC  | Almeida Revista e Corrigida        |
-| NVI  | Nova Versão Internacional          |
-| NTLH | Nova Tradução na Linguagem de Hoje |
-| KJA  | King James Atualizada              |
-| KJF  | King James Fiel                    |
-| ACF  | Almeida Corrigida Fiel             |
+O catálogo canônico fica em `config/translations.json`. Uma tradução somente é
+ingerida quando a fonte é um download oficial ou um arquivo entregue pelo titular,
+e somente é publicada quando `status=published` e `allowPublicApi=true`.
+
+`onbv-2007` usa o download USFM oficial da Biblica, sob CC BY-SA 4.0. ACF, ARC,
+KJA, KJF, NTLH e NVI permanecem como `license-review`: os arquivos legados não são
+expostos nas rotas v1 e não devem ser enviados ao S3 até existir licença documental.
 
 ## API Endpoints
 
@@ -45,6 +44,12 @@ Client → Nginx → biblia-app → Redis → SQLite
 | GET | `/verses/:bookId/:chapterId` | Verses by chapter (`?start=&end=` range) |
 | GET | `/search?query=` | Search verses by text (max 200 chars) |
 | GET | `/docs` | Swagger interactive docs |
+| GET | `/terms` | Termos operacionais e contato para titulares |
+| GET | `/v1/public/translations` | Catálogo publicado; requer `X-API-Key` |
+| GET | `/v1/public/translations/:id/books` | Livros da tradução publicada |
+| GET | `/v1/public/translations/:id/books/:book/chapters/:chapter` | Um capítulo por requisição |
+| GET | `/v1/public/translations/:id/search?q=` | Busca FTS, limitada a 50 resultados |
+| GET | `/v1/app/...` | Mesmos recursos para o BFF; requer Bearer service token |
 
 ## Environment Variables
 
@@ -57,6 +62,12 @@ Client → Nginx → biblia-app → Redis → SQLite
 | `REDIS_HOST` | `localhost` | Redis host |
 | `REDIS_PORT` | `6379` | Redis port |
 | `REDIS_PASSWORD` | — | Redis authentication password (required in production) |
+| `PUBLIC_API_KEY_HASHES` | — | SHA-256 das chaves públicas, separados por vírgula |
+| `APP_SERVICE_TOKEN` | — | Segredo compartilhado exclusivamente com o BFF web |
+| `BIBLE_DATA_DIR` | `/data/bibles` | Diretório dos SQLite aprovados em runtime |
+| `BIBLE_S3_BUCKET` | — | Bucket privado de fontes e SQLite versionados |
+| `LEGAL_CONTACT_EMAIL` | — | Contato exibido em `/` e `/terms` |
+| `ENABLE_LEGACY_API` | `false` | Ponte temporária para rotas antigas; não habilitar sem revisar as licenças |
 
 ## Development
 
@@ -68,7 +79,25 @@ npm run swagger    # Regenerate Swagger docs
 npm run lint       # ESLint
 npm run typecheck  # TypeScript sem emitir arquivos
 npm run build      # Gates locais + Swagger + integridade dos dados
+npm run verify:translations
 ```
+
+### Pipeline de uma tradução
+
+```bash
+# Gera e valida localmente; nunca faz scraping nem inventa uma fonte.
+npm run translation:ingest -- \
+  --translation onbv-2007 \
+  --source /caminho/download-oficial.zip \
+  --output /tmp/onbv-2007.sqlite
+
+# Repete o processo e envia fonte, SQLite, manifesto e ponteiro current.json ao S3 privado.
+npm run translation:ingest -- --translation onbv-2007 --upload
+```
+
+O upload usa chaves imutáveis por revisão e SSE-S3. O comando valida 66 livros,
+integridade estrutural, textos vazios e gera FTS5 e SHA-256 antes de publicar o
+ponteiro. API.Bible e APIs semelhantes não são fontes de ingestão.
 
 Copy `.env.dev.example` to `.env` and adjust values before running.
 
@@ -110,3 +139,5 @@ Key measures in place:
 - Helmet security headers + CSP via Nginx
 - Request body limited to 50kb
 - Input validation on all query parameters
+- API keys são armazenadas somente como SHA-256; o BFF usa token separado
+- respostas v1 carregam crédito, licença, link oficial e permissão de redistribuição

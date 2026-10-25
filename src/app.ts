@@ -11,6 +11,8 @@ import { createApiRouter } from './router.ts';
 import { loggerMiddleware } from './middlewares/logger.ts';
 import type IController from './controllers/controller-interface.ts';
 import type { CacheClient } from './middlewares/cache.ts';
+import { createV1Router } from './v1-router.ts';
+import { TranslationService } from './services/translation-service.ts';
 
 export interface AppRedisClient extends CacheClient {
     ping(): Promise<unknown>;
@@ -68,6 +70,7 @@ export function createApp(
         port,
     );
     const app = express();
+    const translationService = new TranslationService(environment.BIBLE_DATA_DIR);
 
     app.disable('x-powered-by');
     app.set('trust proxy', 1);
@@ -109,10 +112,44 @@ export function createApp(
             return res.status(503).json({ status: 'error', sqlite: 'inaccessible', uptime, memoryMB });
         }
 
-        return res.json({ status: 'ok', uptime, redis: 'connected', sqlite: 'accessible', memoryMB });
+        if (environment.NODE_ENV === 'production') {
+            try {
+                await translationService.ping('public');
+            } catch {
+                return res.status(503).json({
+                    status: 'error', translations: 'inaccessible', uptime, memoryMB,
+                });
+            }
+        }
+
+        return res.json({
+            status: 'ok', uptime, redis: 'connected', sqlite: 'accessible',
+            translations: environment.NODE_ENV === 'production' ? 'accessible' : 'not-checked', memoryMB,
+        });
     });
 
-    app.use('/', createApiRouter(dbController, searchLimiter, redisClient));
+    app.get('/', (_req, res) => res.json({
+        project: 'API Bíblica Multilíngue de Consulta',
+        commercial: false,
+        mission: 'Oferecer leitura e estudo bíblico com fontes e licenças verificáveis.',
+        legalNotice: 'Cada tradução possui termos próprios. Consulte /terms e os metadados de direitos de cada resposta.',
+        contact: environment.LEGAL_CONTACT_EMAIL ?? null,
+        api: '/v1/public',
+    }));
+    app.get('/terms', (_req, res) => res.json({
+        massDownload: 'Permitido somente quando indicado nos metadados da tradução e dentro da licença aplicável.',
+        attribution: 'Os créditos retornados pela API devem acompanhar qualquer exibição ou redistribuição.',
+        takedown: `Titulares podem solicitar revisão pelo contato ${environment.LEGAL_CONTACT_EMAIL ?? 'não configurado'}.`,
+        noWarranty: true,
+    }));
+
+    app.use('/v1', createV1Router(environment, translationService));
+
+    // Temporary rollback bridge. Production must opt in explicitly; unreviewed legacy
+    // SQLite files are never exposed by the v1 catalog.
+    if (environment.NODE_ENV !== 'production' || environment.ENABLE_LEGACY_API === 'true') {
+        app.use('/', createApiRouter(dbController, searchLimiter, redisClient));
+    }
 
     app.use((_req, res) => {
         res.status(404).json({ error: 'Not Found' });
@@ -121,6 +158,11 @@ export function createApp(
     app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
         if (typeof err === 'object' && err !== null && 'type' in err && err.type === 'entity.too.large') {
             res.status(413).json({ error: 'Request body too large', requestId: res.locals.requestId });
+            return;
+        }
+
+        if (typeof err === 'object' && err !== null && 'status' in err && typeof err.status === 'number') {
+            res.status(err.status).json({ error: err instanceof Error ? err.message : 'Request failed' });
             return;
         }
 

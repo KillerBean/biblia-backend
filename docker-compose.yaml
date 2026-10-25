@@ -18,8 +18,12 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - BIBLE_DATA_DIR=/data/bibles
+      - SYNC_TRANSLATIONS_ON_START=${SYNC_TRANSLATIONS_ON_START:-false}
+    volumes:
+      - bible_data:/data/bibles
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:3333/health || exit 1"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -27,10 +31,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128m
+          memory: 256m
           cpus: "0.3"
         reservations:
-          memory: 64m
+          memory: 96m
 
   nginx:
     container_name: biblia-nginx
@@ -68,3 +72,5 @@ services:
           memory: 80m
           cpus: "0.1"
 
+volumes:
+  bible_data:

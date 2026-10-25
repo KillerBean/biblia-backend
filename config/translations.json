@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "translations": [
+    {
+      "id": "onbv-2007",
+      "abbreviation": "ONBV",
+      "name": "Biblica Open Nova Bíblia Viva 2007",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "published",
+      "source": {
+        "kind": "official-download",
+        "format": "usfm",
+        "url": "https://openbible-api-1.biblica.com/artifactContent/68259f1e295f793c15bd9868",
+        "sha256": "511ae9e7b8ea0316821a6add72d14dfb2c6e8d382e975bdc992b3751dc83621a",
+        "publisher": "Biblica"
+      },
+      "license": {
+        "spdx": "CC-BY-SA-4.0",
+        "credit": "Biblica Open Nova Bíblia Viva 2007 © Biblica, Inc. Licenciada sob CC BY-SA 4.0.",
+        "noticeUrl": "https://open.bible/bibles/68259f1e295f793c15bd9859",
+        "officialUrl": "https://www.biblica.com/",
+        "allowPublicApi": true,
+        "allowOfflineDistribution": true,
+        "shareAlike": true
+      },
+      "artifact": {
+        "revision": "2007.1",
+        "sqliteKey": "translations/onbv-2007/2007.1/bible.sqlite",
+        "sourceKey": "translations/onbv-2007/2007.1/source.zip"
+      }
+    },
+    {
+      "id": "acf",
+      "abbreviation": "ACF",
+      "name": "Almeida Corrigida Fiel",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Sociedade Bíblica Trinitariana do Brasil" },
+      "license": { "credit": "Licença de redistribuição pendente de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    },
+    {
+      "id": "arc",
+      "abbreviation": "ARC",
+      "name": "Almeida Revista e Corrigida",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Sociedade Bíblica do Brasil" },
+      "license": { "credit": "Licença de redistribuição pendente de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    },
+    {
+      "id": "kja",
+      "abbreviation": "KJA",
+      "name": "King James Atualizada",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Abba Press" },
+      "license": { "credit": "Licença de redistribuição pendente de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    },
+    {
+      "id": "kjf",
+      "abbreviation": "KJF",
+      "name": "King James Fiel",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Não confirmado" },
+      "license": { "credit": "Titular e licença de redistribuição pendentes de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    },
+    {
+      "id": "ntlh",
+      "abbreviation": "NTLH",
+      "name": "Nova Tradução na Linguagem de Hoje",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Sociedade Bíblica do Brasil" },
+      "license": { "credit": "Licença de redistribuição pendente de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    },
+    {
+      "id": "nvi",
+      "abbreviation": "NVI",
+      "name": "Nova Versão Internacional",
+      "language": "pt-BR",
+      "direction": "ltr",
+      "status": "license-review",
+      "source": { "kind": "legacy-local", "format": "sqlite", "publisher": "Biblica" },
+      "license": { "credit": "Licença de redistribuição pendente de comprovação.", "allowPublicApi": false, "allowOfflineDistribution": false, "shareAlike": false }
+    }
+  ]
+}

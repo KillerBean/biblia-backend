@@ -6,6 +6,26 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/) e este p
 
 ## [Unreleased]
 
+### Added
+- **Catálogo licenciado de traduções e pipeline de ingestão**: registro de traduções (`config/translations.json`), importação USFM, API versionada `/v1` com autenticação por API key e armazenamento de artefatos em S3 (#3)
+- Scripts de operação: `create-api-key`, `import-usfm`, `ingest-translation`, `sync-translations`, `verify-translations`
+- Manifests de deploy assinados publicados no CI
+- `AGENTS.md` com orientações para agentes no repositório
+- Roadmap de otimização de recursos em `docs/`
+
+### Changed
+- Conformidade arquitetural: refatoração de `index`, `router`, middlewares e controller SQLite (#3)
+- CI/deploy: gates de produção unificados, promoção para produção revisada, retenção de imagens GHCR consciente de relacionamentos (limpeza insegura desativada), hostname canônico da API no deploy (#3)
+- CI: branch `master` corrigida (antes `main`) e tag `:latest` removida do push (#2)
+- Dependências npm fixadas em versões exatas (sem `^`); imagem base `node:24-alpine` fixada por SHA; actions fixadas por SHA de commit
+
+### Fixed
+- CI: Swagger gerado antes do typecheck; Git LFS habilitado no checkout do build Docker
+
+### Security
+- CVEs corrigidos (Trivy): zlib, openssl, musl, minimatch, picomatch, tar e `qs` via overrides/upgrade do npm e `apk upgrade` (#2)
+- Dependências npm de runtime da imagem Docker atualizadas
+
 ---
 
 ## [v0.4.0] - 2026-03-30

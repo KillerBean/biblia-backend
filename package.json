@@ -24,10 +24,10 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1141.0",
-    "body-parser": "1.20.6",
+    "body-parser": "1.20.9",
     "cors": "2.8.6",
     "dotenv": "16.6.1",
-    "express": "4.22.2",
+    "express": "4.22.3",
     "express-rate-limit": "8.6.2",
     "helmet": "8.1.0",
     "ioredis": "5.10.0",
@@ -60,10 +60,10 @@
   "overrides": {
     "minimatch@10": "10.2.5",
     "picomatch@4": "4.0.4",
-    "qs": "6.16.0",
+    "qs": "6.17.1",
     "tar": "7.5.22",
     "minimatch@9": {
-      "brace-expansion": "2.1.4"
+      "brace-expansion": "2.1.7"
     }
   },
   "nodemonConfig": {

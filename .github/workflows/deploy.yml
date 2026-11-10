@@ -7,7 +7,8 @@ on:
   pull_request:
     branches: [prod]
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore: ['**.md', 'docs/**']
+    # Sem paths-ignore: "Production gates" é check obrigatório do ruleset protect-prod;
+    # workflow pulado por path deixa o check pendente e o PR p/ prod trava.
 
 jobs:
   test:

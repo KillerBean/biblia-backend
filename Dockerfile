@@ -32,9 +32,9 @@ FROM node:24-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a
 # (zlib CVE-2026-22184, openssl CVE-2026-31789/28387-90, musl CVE-2026-40200)
 RUN apk upgrade --no-cache
 
-# Keep the runtime CLI on a patched release. npm 11.19.1 includes fixed
-# tar, pacote, brace-expansion, ip-address and sigstore dependencies.
-RUN npm install -g npm@11.19.1
+# Keep the runtime CLI on a patched release. npm 11.21.2 includes fixed
+# tar, pacote, brace-expansion, undici, ip-address and sigstore dependencies.
+RUN npm install -g npm@11.21.2
 
 WORKDIR /app
 

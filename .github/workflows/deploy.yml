@@ -1,14 +1,18 @@
 name: CI/CD
 
 on:
+  # Push só em prod (deploy). Sem push em master: o PR já testou e o gate roda no PR e no push para prod.
   push:
-    branches: [master, prod]
+    branches: [prod]
   pull_request:
     branches: [prod]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore: ['**.md', 'docs/**']
 
 jobs:
   test:
     name: Production gates
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

@@ -1,14 +1,24 @@
 name: CI
 
 on:
-  push:
-    branches: [ master ]
+  # Sem push em master: o PR já validou e a master só muda via PR.
   pull_request:
     branches: [ master ]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore: ['**.md', 'docs/**']
+  workflow_dispatch:
+
+# Cancela execução antiga do mesmo PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    # PR rascunho não roda.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

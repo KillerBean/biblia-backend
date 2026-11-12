@@ -28,28 +28,33 @@ jobs:
           lfs: true
           fetch-depth: 0
 
+      # Versão do pnpm vem de packageManager no package.json.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          run_install: false
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Type check
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Build checks and verify assets
-        run: npm run build
+        run: pnpm run build
 
       - name: Run tests
-        run: npm test -- --coverage
+        run: pnpm test --coverage
 
       - name: Dependency audit
-        run: npm audit --audit-level=high
+        run: pnpm audit --audit-level high
 
       - name: Secret scan
         uses: trufflesecurity/trufflehog@bff3d2670b362bbb4a0bcdeffea146cbc2ad3abd

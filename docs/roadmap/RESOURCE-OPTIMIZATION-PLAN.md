@@ -29,7 +29,7 @@ hit/miss, uso do Redis e latência das consultas SQLite.
 ### 2. Runtime e imagem
 
 - Compilar TypeScript no builder e iniciar o runtime com `node dist/index.js`,
-  removendo `tsx`, `npx` e dependências de desenvolvimento da imagem final.
+  removendo `tsx` via npx e dependências de desenvolvimento da imagem final.
 - Preservar imagem multi-stage, usuário não-root, bases já indexadas e build no
   GitHub Actions. Comparar tamanho da imagem, startup, RSS e CVEs antes/depois.
 - Manter uma única réplica enquanto rate limit e outros estados em processo não
@@ -60,8 +60,8 @@ hit/miss, uso do Redis e latência das consultas SQLite.
 
 ## Gates e metas
 
-Cada etapa deve passar por `npm run lint`, `npm run typecheck`, `npm test`,
-`npm run verify:assets`, build/scan da imagem e teste de carga reproduzível.
+Cada etapa deve passar por `pnpm run lint`, `pnpm run typecheck`, `pnpm test`,
+`pnpm run verify:assets`, build/scan da imagem e teste de carga reproduzível.
 Validar todas as traduções, parser de referências, busca, cache miss/hit,
 indisponibilidade do Redis, shutdown e health check.
 

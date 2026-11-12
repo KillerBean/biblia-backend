@@ -72,27 +72,27 @@ expostos nas rotas v1 e não devem ser enviados ao S3 até existir licença docu
 ## Development
 
 ```bash
-npm install
-npm run dev        # Hot reload via nodemon
-npm test           # Run Jest tests
-npm run swagger    # Regenerate Swagger docs
-npm run lint       # ESLint
-npm run typecheck  # TypeScript sem emitir arquivos
-npm run build      # Gates locais + Swagger + integridade dos dados
-npm run verify:translations
+pnpm install
+pnpm run dev        # Hot reload via nodemon
+pnpm test           # Run Jest tests
+pnpm run swagger    # Regenerate Swagger docs
+pnpm run lint       # ESLint
+pnpm run typecheck  # TypeScript sem emitir arquivos
+pnpm run build      # Gates locais + Swagger + integridade dos dados
+pnpm run verify:translations
 ```
 
 ### Pipeline de uma tradução
 
 ```bash
 # Gera e valida localmente; nunca faz scraping nem inventa uma fonte.
-npm run translation:ingest -- \
+pnpm run translation:ingest -- \
   --translation onbv-2007 \
   --source /caminho/download-oficial.zip \
   --output /tmp/onbv-2007.sqlite
 
 # Repete o processo e envia fonte, SQLite, manifesto e ponteiro current.json ao S3 privado.
-npm run translation:ingest -- --translation onbv-2007 --upload
+pnpm run translation:ingest -- --translation onbv-2007 --upload
 ```
 
 O upload usa chaves imutáveis por revisão e SSE-S3. O comando valida 66 livros,
@@ -107,7 +107,7 @@ Open a reviewed PR from `master` to `prod`; never push directly to `prod`.
 After merge, the CI/CD pipeline (`.github/workflows/deploy.yml`) runs:
 
 1. Runs tests
-2. Generates Swagger docs (`npm run swagger`)
+2. Generates Swagger docs (`pnpm run swagger`)
 3. Builds and pushes Docker image to GHCR
 4. Signs the immutable image and publishes a signed deployment manifest
 5. The VPS puller verifies the manifest and applies `biblia-app`

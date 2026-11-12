@@ -9,7 +9,7 @@ const { values } = parseArgs({
     },
 });
 if (!values.source || !values.translation || !values.output) {
-    throw new Error('Usage: npm run translation:import -- --source DIR --translation ID --output FILE');
+    throw new Error('Usage: pnpm run translation:import -- --source DIR --translation ID --output FILE');
 }
 
 console.log(JSON.stringify(await importUsfmDirectory({

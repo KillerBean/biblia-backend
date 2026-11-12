@@ -7,7 +7,7 @@ Cada arquivo é somente leitura em runtime e deve ser atualizado junto com:
 - a versão do conteúdo;
 - o checksum SHA-256 e o tamanho no `docs/data-assets.json`.
 
-O CI executa `npm run verify:assets` para impedir alterações acidentais ou
+O CI executa `pnpm run verify:assets` para impedir alterações acidentais ou
 artefatos corrompidos. Para atualizar uma tradução, a origem, a data da
 importação e a autorização de distribuição devem ser registradas no pull
 request, e o manifesto deve ser regenerado/revisado.
